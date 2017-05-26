@@ -45,13 +45,11 @@ class State{
 		// Boxes positions
 		vector<Pos> boxes;
 
+		// Constructor
 		State();
 
 		// Constructor from parent
 		State(State *parent,string action_vector);
-
-		// Constructor from string descriptor
-		State(char *str);
 
 		virtual ~State();
 

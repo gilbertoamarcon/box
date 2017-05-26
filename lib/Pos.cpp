@@ -5,23 +5,7 @@ Pos::Pos(int i, int j){
 	this->j = j;
 }
 
-Pos::~Pos(){
-};
-
-// Parsing string into position vector
-void Pos::parse(char *str, vector<Pos> *pos){
-	if(str == NULL) return;
-	int i = 0;
-	int j = 0;
-	for(;;){
-		if(str[0] == '\0' || str[0] == '\n') return;
-		i = atoi(str);
-		while(str[0] != ',') str++; str++;
-		j = atoi(str);
-		while(str[0] != ',') str++; str++;
-		pos->push_back(Pos(i,j));
-	}
-}
+Pos::~Pos(){};
 
 // Compare two position vectors
 //  1: sta > state

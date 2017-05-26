@@ -14,9 +14,6 @@ class Pos{
 		int i;
 		int j;
 
-		// Parsing string into position vector
-		static void parse(char *str,vector<Pos> *pos);
-
 		// Compare two position vectors
 		//  1: sta > state
 		//  0: sta = state

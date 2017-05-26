@@ -71,6 +71,7 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 	}
 	else
 		ROS_INFO("Plan failed.\n");
+	ROS_INFO("Ready to box-plan.");
 
 	// Cleanup
 	delete State::map;

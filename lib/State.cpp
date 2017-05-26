@@ -32,23 +32,6 @@ State::State(State *parent,string action_vector){
 	this->g++;
 }
 
-State::State(char *str){
-
-	this->parent = NULL;
-	this->g = 0;
-	this->f = 0;
-
-	char *boxes_str		= strtok(str,":");
-	char *robots_str	= strtok(NULL,":");
-	Pos::parse(boxes_str,&boxes);
-	Pos::parse(robots_str,&robots);
-
-	// Initializing action vector with no action
-	for(Pos robot : this->robots)
-		action_vector.push_back('N');
-
-}
-
 State::~State(){}
 
 // Compare with two states
