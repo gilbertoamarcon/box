@@ -17,20 +17,15 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 	State::map = new Map(int(req.map.width),int(req.map.height),&req.map.data[0]);
 
 	// Initial and goal states
-	char init[BUFFER_SIZE];
-	char final[BUFFER_SIZE];
-	init[0] = '\0';
-	final[0] = '\0';
+	State::start	= new State();
+	State::goal		= new State();
 	for(auto& pos : req.problem.initial_box)
-		sprintf(init,"%s%d,%d,",init,int(pos.x),int(pos.y));
-	sprintf(init,"%s:",init);
+		State::start->boxes.push_back(Pos(int(pos.x),int(pos.y)));
 	for(auto& pos : req.problem.initial_rover)
-		sprintf(init,"%s%d,%d,",init,int(pos.x),int(pos.y));
+		State::start->robots.push_back(Pos(int(pos.x),int(pos.y)));
 	for(auto& pos : req.problem.final_box)
-		sprintf(final,"%s%d,%d,",final,int(pos.x),int(pos.y));
-	sprintf(final,"%s:",final);
-	State::start	= new State(init);
-	State::goal		= new State(final);
+		State::goal->boxes.push_back(Pos(int(pos.x),int(pos.y)));
+
 	ROS_INFO("Problem received:");
 	State::display_world(State::start);
 

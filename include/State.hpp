@@ -45,6 +45,8 @@ class State{
 		// Boxes positions
 		vector<Pos> boxes;
 
+		State();
+
 		// Constructor from parent
 		State(State *parent,string action_vector);
 

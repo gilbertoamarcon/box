@@ -4,6 +4,18 @@ Map* State::map;
 State* State::start;
 State* State::goal;
 
+State::State(){
+
+	this->parent = NULL;
+	this->g = 0;
+	this->f = 0;
+
+	// Initializing action vector with no action
+	for(Pos robot : this->robots)
+		action_vector.push_back('N');
+
+}
+
 // Constructor from parent
 State::State(State *parent,string action_vector){
 
