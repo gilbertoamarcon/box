@@ -18,7 +18,6 @@ find_package(catkin REQUIRED COMPONENTS
 # Generate messages in the 'msg' folder
 add_message_files(
 	FILES
-	Num.msg
 	Map.msg
 	Plan.msg
 	Problem.msg
@@ -27,7 +26,6 @@ add_message_files(
 # Generate services in the 'srv' folder
 add_service_files(
 	FILES
-	AddTwoInts.srv
 	BoxPlan.srv
 )
 
@@ -59,10 +57,6 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
-
-add_executable(add_two_ints_server src/add_two_ints_server.cpp)
-target_link_libraries(add_two_ints_server ${catkin_LIBRARIES})
-add_dependencies(add_two_ints_server box)
 
 add_executable(box_plan src/box_plan.cpp)
 target_link_libraries(box_plan ${catkin_LIBRARIES})

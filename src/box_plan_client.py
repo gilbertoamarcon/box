@@ -5,6 +5,7 @@ import sys
 import rospy
 import sys
 from geometry_msgs.msg import Point
+import rospkg
 from box.msg import Map
 from box.msg import Problem
 from box.msg import Plan
@@ -69,7 +70,8 @@ def print_plan(plan):
 if __name__ == "__main__":
 
 	# File parameters
-	map_filename = "../res/map.csv"
+	rospack = rospkg.RosPack()
+	map_filename = rospack.get_path('box')+"/res/map.csv"
 
 	map = load_map(map_filename)
 
