@@ -4,6 +4,13 @@
 
 Map::Map(){}
 
+Map::Map(int cols, int rows, int *data){
+	this->cols = cols;
+	this->rows = rows;
+	this->map = new int[cols*rows];
+	std::memcpy(this->map,&data[0],cols*rows*sizeof(int));
+}
+
 Map::~Map(){
 	delete map;
 };

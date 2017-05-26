@@ -14,13 +14,7 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 	Search::epsilon = 1.0;
 
 	// Initializing the map
-	State::map = new Map();
-	State::map->cols = req.map.width;
-	State::map->rows = req.map.height;
-	State::map->map = new int[State::map->cols*State::map->rows];
-	for(int i = 0; i < State::map->rows; i++)
-		for(int j = 0; j < State::map->cols; j++)
-			State::map->map[State::map->coordinate2index(i,j)] = req.map.data[State::map->coordinate2index(i,j)];
+	State::map = new Map(int(req.map.width),int(req.map.height),&req.map.data[0]);
 
 	// Initial and goal states
 	char init[BUFFER_SIZE];
@@ -39,7 +33,6 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 	State::goal		= new State(final);
 	ROS_INFO("Problem received:");
 	State::display_world(State::start);
-
 
 	// Running and taking execution time
 	ROS_INFO("Planning started...");

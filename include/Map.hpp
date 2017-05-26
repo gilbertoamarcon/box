@@ -1,5 +1,6 @@
 #ifndef MAP_H
 #define MAP_H
+#include <cstring>
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
@@ -21,6 +22,7 @@ class Map{
 		vector<Pos> corners;
 		vector<Pos> deadlocks;
 		Map();
+		Map(int cols, int rows, int *data);
 		virtual ~Map();
 		int get_value(int i, int j);
 		bool is_Corner(int i, int j);
