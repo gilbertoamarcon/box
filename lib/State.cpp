@@ -39,37 +39,6 @@ State::State(char *str){
 
 State::~State(){}
 
-// Loading problem from file
-void State::load_problem(char *filename){
-
-	// Checking if origin file exists
-	FILE *file  = fopen(filename,"r");
-	if(file == NULL){
-		printf("Error: Origin file '%s' not found.\n",filename);
-		return;
-	}
-	
-	// Getting problem initial and goal conditions
-	char init[BUFFER_SIZE];
-	char final[BUFFER_SIZE];
-	fgets(init,BUFFER_SIZE,file);
-	fgets(final,BUFFER_SIZE,file);
-
-	// Done
-	fclose(file);
-
-	// Initializing start and goal states
-	start	= new State(init);
-	goal	= new State(final);
-
-	return;
-}
-
-// Load map file
-void State::load_map(char *filename){
-	map = new Map(filename);
-}
-
 // Compare with two states
 //  1: this > state
 //  0: this = state

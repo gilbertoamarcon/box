@@ -57,13 +57,11 @@ catkin_package(
 
 add_library(box_planner
 	lib/Closed.cpp
-	lib/main.cpp
 	lib/Map.cpp
 	lib/Open.cpp
 	lib/Pos.cpp
 	lib/Search.cpp
 	lib/State.cpp
-	lib/timeIt.cpp
 )
 
 include_directories(

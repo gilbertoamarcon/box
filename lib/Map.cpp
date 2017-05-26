@@ -4,68 +4,6 @@
 
 Map::Map(){}
 
-Map::Map(char * filename){
-
-	this->cols = 1;
-	this->rows = 1;
-
-	FILE *file;	
-	char fileBuffer[BUFFER_SIZE]; 
-	int aux = 0;
-
-	// Checking if origin file exists
-	file  = fopen(filename,"r");
-	if(file == NULL){
-		printf("Error: Origin file '%s' not found.\n",filename);
-		return;
-	}
-
-	// Counting cols
-	if(fgets(fileBuffer,BUFFER_SIZE,file) == NULL){
-		printf("Error: Error while reading file.\n");
-		return;
-	}
-	while(fileBuffer[aux] != '\n'){
-		if(fileBuffer[aux] == ',')
-			cols++;
-		aux++;
-	}
-
-	// Counting rows
-	while(fgets(fileBuffer,BUFFER_SIZE,file) != NULL) rows++;
-
-	rewind(file);
-
-	map = new int[cols*rows];
-
-	// for(int i = rows-1; i >= 0; i--){
-	for(int i = 0; i < rows; i++){
-
-		// Load line
-		fgets(fileBuffer,BUFFER_SIZE,file);
-
-		aux = 0;
-		for(int j = 0; j < cols; j++){
-
-			map[coordinate2index(i,j)] = atoi(fileBuffer+aux);
-
-			// Seek next value
-			while(fileBuffer[aux] != ',')
-				if(fileBuffer[aux] == '\n')
-					break;
-				else
-					aux++;
-			aux++;
-		}
-
-	}
-
-	fclose(file);
-
-	return;
-
-}
-
 Map::~Map(){
 	delete map;
 };

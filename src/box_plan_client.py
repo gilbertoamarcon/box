@@ -31,7 +31,7 @@ def load_map(map_filename):
 	data = list(reader)
 
 	# Parsing data
-	map.width = len(data)
+	map.height = len(data)
 	max_h = 0
 	for row in data:
 		for entry in row:
@@ -39,9 +39,9 @@ def load_map(map_filename):
 				map.data.append(int(1))
 			else:
 				map.data.append(int(0))
-		if len(data) > max_h:
-			max_h = len(data)
-	map.height = max_h
+		if len(row) > max_h:
+			max_h = len(row)
+	map.width = max_h
 
 	# Closing file
 	f.close()
@@ -79,20 +79,20 @@ if __name__ == "__main__":
 	problem = Problem()
 
 	# Number of rovers and boxes
-	problem.num_rovers = 2
-	problem.num_boxes = 2
+	problem.num_rovers = 1
+	problem.num_boxes = 1
 
 	# Initial Rover Positions
 	problem.initial_rover.append(Point(5,7,0))
-	problem.initial_rover.append(Point(4,7,0))
+	# problem.initial_rover.append(Point(4,7,0))
 
 	# Initial Box Positions
 	problem.initial_box.append(Point(2,2,0))
-	problem.initial_box.append(Point(6,2,0))
+	# problem.initial_box.append(Point(6,2,0))
 
 	# Goal Box Positions
 	problem.final_box.append(Point(6,2,0))
-	problem.final_box.append(Point(2,2,0))
+	# problem.final_box.append(Point(2,2,0))
 	
 	# Requesting plan service
 	plan = request_plan(map,problem)

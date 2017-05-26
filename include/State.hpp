@@ -52,12 +52,6 @@ class State{
 		State(char *str);
 
 		virtual ~State();
-		
-		// Loading problem from file
-		static void load_problem(char *filename);
-
-		// Loading map file
-		static void load_map(char *filename);
 
 		// Compare with two states
 		//  1: this > state

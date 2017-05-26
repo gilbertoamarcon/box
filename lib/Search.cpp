@@ -9,32 +9,6 @@ float Search::time_lim_secs;
 
 stack<State> Search::plan;
 
-// Loading problem from file
-void Search::load_search_parameters(char *filename){
-
-	// Checking if origin file exists
-	FILE *file  = fopen(filename,"r");
-	if(file == NULL){
-		printf("Error: Origin file '%s' not found.\n",filename);
-		return;
-	}
-
-	// Getting paramters
-	char param_buffer[BUFFER_SIZE];
-	fgets(param_buffer,BUFFER_SIZE,file);
-	int i = 0;
-	max_iterations = atoi(param_buffer);
-	while(param_buffer[i] != ',') i++; i++;
-	epsilon = atof(param_buffer+i);
-	while(param_buffer[i] != ',') i++; i++;
-	time_lim_secs = atof(param_buffer+i);
-
-	// Done
-	fclose(file);
-
-	return;
-}
-
 // Print plan
 void Search::print_plan(){
 	int i = 0;
@@ -46,28 +20,6 @@ void Search::print_plan(){
 		plan_cpy.pop();
 	}
 	printf("\n");
-}
-
-// Store plan execution history
-void Search::store_plan(char *filename){
-
-	// Checking if origin file exists
-	FILE *file  = fopen(filename,"w");
-	if(file == NULL){
-		printf("Error: Origin file '%s' not found.\n",filename);
-		return;
-	}
-
-	stack<State> plan_cpy = plan;
-	while(!plan_cpy.empty()){
-		fprintf(file,"%s",plan_cpy.top().to_str().c_str());
-		plan_cpy.pop();
-	}
-
-	// Done
-	fclose(file);
-
-	return;
 }
 
 // Insert child to open vector if correct conditions met

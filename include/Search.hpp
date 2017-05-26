@@ -24,14 +24,8 @@ class Search{
 		// Plan
 		static stack<State> plan;
 
-		// Loading configuration from file
-		static void load_search_parameters(char *filename);
-
 		// Print plan
 		static void print_plan();
-
-		// Store plan execution history
-		static void store_plan(char *filename);
 
 		// Search for a plan
 		static int search();

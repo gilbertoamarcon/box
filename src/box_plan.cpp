@@ -1,6 +1,5 @@
 #include "ros/ros.h"
 #include "../include/Search.hpp"
-#include "../include/Map.hpp"
 #include "box/BoxPlan.h"
 #include "box/Map.h"
 #include "box/Plan.h"
@@ -8,30 +7,6 @@
 #include "geometry_msgs/Point.h"
 
 bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
-
-	// Printing inputs
-	ROS_INFO("Problem received:");
-	printf("Map:\n");
-	printf("map.width: %d\n",req.map.width);
-	printf("map.height: %d\n",req.map.height);
-	for(int i = 0; i < req.map.width; i++){
-		for(int j = 0; j < req.map.height; j++)
-			printf("%d",req.map.data[i*req.map.height+j]);
-		printf("\n");
-	}
-	printf("Problem:\n");
-	printf("num_rovers: %d\n",req.problem.num_rovers);
-	printf("num_boxes: %d\n",req.problem.num_boxes);
-	printf("initial_rover: \n");
-	for(auto& pos : req.problem.initial_rover)
-		printf("%.0f,%.0f\n",pos.x,pos.y);
-	printf("initial_box: \n");
-	for(auto& pos : req.problem.initial_box)
-		printf("%.0f,%.0f\n",pos.x,pos.y);
-	printf("final_box: \n");
-	for(auto& pos : req.problem.final_box)
-		printf("%.0f,%.0f\n",pos.x,pos.y);
-	fflush(stdout);
 
 	// Search params
 	Search::max_iterations = 1e9;
@@ -45,7 +20,7 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 	State::map->map = new int[State::map->cols*State::map->rows];
 	for(int i = 0; i < State::map->rows; i++)
 		for(int j = 0; j < State::map->cols; j++)
-			State::map->map[State::map->coordinate2index(i,j)] = req.map.data[i*req.map.height+j];
+			State::map->map[State::map->coordinate2index(i,j)] = req.map.data[State::map->coordinate2index(i,j)];
 
 	// Initial and goal states
 	char init[BUFFER_SIZE];
@@ -62,26 +37,23 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 	sprintf(final,"%s:",final);
 	State::start	= new State(init);
 	State::goal		= new State(final);
+	ROS_INFO("Problem received:");
 	State::display_world(State::start);
 
-	int result		= -1;
 
 	// Running and taking execution time
 	ROS_INFO("Planning started...");
-	result = Search::search();
+	Search::search();
 	ROS_INFO("Planning finished.");
 
-	// Presenting results on screen
-	printf("%d expanded nodes; ",Search::num_exp_nodes);
-	printf("%d actions; ",int(Search::plan.size()));
-	printf("%f seconds.\n",Search::planning_time);
-	if(Search::num_exp_nodes > 0)
-			Search::print_plan();
-	else
-		printf("Plan failed.\n");
+	// Presenting stats on screen
+	ROS_INFO("%d expanded nodes.",Search::num_exp_nodes);
+	ROS_INFO("%d actions.",int(Search::plan.size()));
+	ROS_INFO("%f seconds.",Search::planning_time);
 
-	// Setting up plan
+	// Setting up return value (plan) and printing results
 	if(Search::num_exp_nodes > 0){
+		Search::print_plan();
 		res.plan.num_rovers = req.problem.num_rovers;
 		res.plan.num_boxes = req.problem.num_boxes;
 		res.plan.rover_pos.resize(int(Search::plan.size())*res.plan.num_rovers);
@@ -109,6 +81,8 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 			i++;
 		}
 	}
+	else
+		ROS_INFO("Plan failed.\n");
 
 	// Cleanup
 	delete State::map;

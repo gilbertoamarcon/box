@@ -21,7 +21,6 @@ class Map{
 		vector<Pos> corners;
 		vector<Pos> deadlocks;
 		Map();
-		Map(char * filename);
 		virtual ~Map();
 		int get_value(int i, int j);
 		bool is_Corner(int i, int j);
