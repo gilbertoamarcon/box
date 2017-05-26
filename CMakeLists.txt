@@ -54,21 +54,33 @@ catkin_package(
 ## Build ##
 ###########
 
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
 
 add_library(box_planner
-	src/planner/Closed.cpp
-	src/planner/main.cpp
-	src/planner/Map.cpp
-	src/planner/Open.cpp
-	src/planner/Pos.cpp
-	src/planner/Search.cpp
-	src/planner/State.cpp
-	 src/planner/timeIt.cpp
- )
+	lib/Closed.cpp
+	lib/main.cpp
+	lib/Map.cpp
+	lib/Open.cpp
+	lib/Pos.cpp
+	lib/Search.cpp
+	lib/State.cpp
+	lib/timeIt.cpp
+)
+
+include_directories(
+	include
+	${catkin_INCLUDE_DIRS}
+)
+
+link_directories(lib)
 
 add_executable(box_plan src/box_plan.cpp)
-target_link_libraries(box_plan ${catkin_LIBRARIES})
 add_dependencies(box_plan box)
+target_link_libraries(box_plan ${catkin_LIBRARIES} box_planner)
+
+install(TARGETS box_planner
+		ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+		LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+		RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
+
+install(DIRECTORY include/
+		DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})

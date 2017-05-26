@@ -1,4 +1,4 @@
-#include "box/planner/Closed.hpp"
+#include "../include/Closed.hpp"
 
 Closed::Closed(){}
 

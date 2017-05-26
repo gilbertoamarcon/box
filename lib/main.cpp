@@ -1,4 +1,4 @@
-#include "box/planner/Search.hpp"
+#include "../include/Search.hpp"
 
 // File names
 #define CFG_FILE	"files/cfg.csv"

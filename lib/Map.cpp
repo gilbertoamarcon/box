@@ -1,6 +1,8 @@
-#include "box/planner/Map.hpp"
-#include "box/planner/Pos.hpp"
-#include "box/planner/utils.hpp"
+#include "../include/Map.hpp"
+#include "../include/Pos.hpp"
+#include "../include/utils.hpp"
+
+Map::Map(){}
 
 Map::Map(char * filename){
 
