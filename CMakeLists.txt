@@ -45,7 +45,7 @@ generate_messages(
 ###################################
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES box
+	LIBRARIES box_planner
 	CATKIN_DEPENDS roscpp rospy message_runtime
 #  DEPENDS system_lib
 )
@@ -57,6 +57,17 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
+
+add_library(box_planner
+	src/planner/Closed.cpp
+	src/planner/main.cpp
+	src/planner/Map.cpp
+	src/planner/Open.cpp
+	src/planner/Pos.cpp
+	src/planner/Search.cpp
+	src/planner/State.cpp
+	 src/planner/timeIt.cpp
+ )
 
 add_executable(box_plan src/box_plan.cpp)
 target_link_libraries(box_plan ${catkin_LIBRARIES})

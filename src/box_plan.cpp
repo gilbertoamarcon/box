@@ -1,4 +1,5 @@
 #include "ros/ros.h"
+#include "box/planner/Search.hpp"
 #include "box/BoxPlan.h"
 #include "box/Map.h"
 #include "box/Plan.h"
