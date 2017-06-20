@@ -4,6 +4,7 @@
 #include "box/Map.h"
 #include "box/Plan.h"
 #include "box/Problem.h"
+#include "box/Step.h"
 #include "geometry_msgs/Point.h"
 
 bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
@@ -21,7 +22,7 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 	State::goal		= new State();
 	for(auto& pos : req.problem.initial_box)
 		State::start->boxes.push_back(Pos(int(pos.x),int(pos.y)));
-	for(auto& pos : req.problem.initial_rover)
+	for(auto& pos : req.problem.initial_robot)
 		State::start->robots.push_back(Pos(int(pos.x),int(pos.y)));
 	for(auto& pos : req.problem.final_box)
 		State::goal->boxes.push_back(Pos(int(pos.x),int(pos.y)));
@@ -41,32 +42,36 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 
 	// Setting up return value (plan) and printing results
 	if(Search::num_exp_nodes > 0){
+
 		Search::print_plan();
-		res.plan.num_rovers = req.problem.num_rovers;
+		res.plan.num_robots = req.problem.num_robots;
 		res.plan.num_boxes = req.problem.num_boxes;
-		res.plan.rover_pos.resize(int(Search::plan.size())*res.plan.num_rovers);
-		res.plan.box_pos.resize(int(Search::plan.size())*res.plan.num_boxes);
-		int ctr = 0;
-		int i = 0;
+
+		// For all plan steps
 		while(!Search::plan.empty()){
-			ctr = 0;
+			box::Step step;
+
+			// For all robot positions
 			for(auto& pos : Search::plan.top().robots){
 				geometry_msgs::Point pt;
 				pt.x = pos.i;
 				pt.y = pos.j;
 				pt.z = 0.00;
-				res.plan.rover_pos[res.plan.num_rovers*i+ctr++] = pt;
+				step.robot_pos.push_back(pt);
 			}
-			ctr = 0;
+
+			// For all box positions
 			for(auto& pos : Search::plan.top().boxes){
 				geometry_msgs::Point pt;
 				pt.x = pos.i;
 				pt.y = pos.j;
 				pt.z = 0.00;
-				res.plan.box_pos[res.plan.num_boxes*i+ctr++] = pt;
+				step.box_pos.push_back(pt);
 			}
+
+			// Push step into plan
+			res.plan.steps.push_back(step);
 			Search::plan.pop();
-			i++;
 		}
 	}
 	else

@@ -12,6 +12,7 @@ from tf.transformations import quaternion_from_euler
 from box.msg import Map
 from box.msg import Problem
 from box.msg import Plan
+from box.msg import Step
 from box.srv import *
 
 def send_angle_goal(prev_xy, next_xy):
@@ -37,9 +38,12 @@ def send_angle_goal(prev_xy, next_xy):
 	client.send_goal(goal)
 	client.wait_for_result(rospy.Duration.from_sec(5))
 
-ini_rovers = [69]
-ini_boxes = [109]
-end_boxes = [57]
+# ini_robots = [69]
+# ini_boxes = [109]
+# end_boxes = [57]
+ini_robots = [69,68]
+ini_boxes = [109,110]
+end_boxes = [57,58]
 
 def index_to_pos(index_list):
 	for index in index_list:
@@ -61,13 +65,13 @@ def request_plan(map,problem):
 		print "Service call failed: %s"%e
 
 
-def solve_problem(roverStart, boxStart, boxEnd):
+def solve_problem(robotStart, boxStart, boxEnd):
 	problem = Problem()
-	problem.num_rovers = len(roverStart)
+	problem.num_robots = len(robotStart)
 	problem.num_boxes = len(boxStart)
 
-	for pt in roverStart:
-		problem.initial_rover.append(pt)
+	for pt in robotStart:
+		problem.initial_robot.append(pt)
 	for pt in boxStart:
 		problem.initial_box.append(pt)
 	for pt in boxEnd:
@@ -113,7 +117,7 @@ def get_marker(index,text=None,color=None,id=None):
 			return m
 	return None
 
-def get_pos_marker(index):
+def get_world_pos(index):
 	for marker in pos_index_markers.markers:
 		if marker.id == index:
 			return marker.pose.position.x, marker.pose.position.y
@@ -128,7 +132,7 @@ sub_pos_markers = rospy.Subscriber('/boxmap_marker', MarkerArray, get_pos_index_
 sub_map = rospy.Subscriber('/boxmap', OccupancyGrid, get_map)
 
 # Marker Array Publishers
-ini_rovers_markers = rospy.Publisher('/ini_rovers_markers', MarkerArray, queue_size=10,latch=True)
+ini_robots_markers = rospy.Publisher('/ini_robots_markers', MarkerArray, queue_size=10,latch=True)
 ini_boxes_markers = rospy.Publisher('/ini_boxes_markers', MarkerArray, queue_size=10,latch=True)
 end_boxes_markers = rospy.Publisher('/end_boxes_markers', MarkerArray, queue_size=10,latch=True)
 cur_boxes_markers = rospy.Publisher('/cur_boxes_markers', MarkerArray, queue_size=10,latch=True)
@@ -144,15 +148,15 @@ while pos_index_markers is None:
 	pass
 
 # Marker Arrays
-ini_rovers_marker_array = MarkerArray()
+ini_robots_marker_array = MarkerArray()
 ini_boxes_marker_array = MarkerArray()
 end_boxes_marker_array = MarkerArray()
 
-# Init Rover Marker Arrays
-for i,b in enumerate(ini_rovers):
+# Init robot Marker Arrays
+for i,b in enumerate(ini_robots):
 	text = "R%d"%i
 	color=ColorRGBA(0,0,1,1)
-	ini_rovers_marker_array.markers.append(get_marker(b,text=text,color=color,id=i))
+	ini_robots_marker_array.markers.append(get_marker(b,text=text,color=color,id=i))
 
 # Init Boxes Marker Arrays
 for i,b in enumerate(ini_boxes):
@@ -160,41 +164,34 @@ for i,b in enumerate(ini_boxes):
 	color=ColorRGBA(1,0,0,1)
 	ini_boxes_marker_array.markers.append(get_marker(b,text=text,color=color,id=i))
 
-# Final Rover Marker Arrays
+# Final robot Marker Arrays
 for i,b in enumerate(end_boxes):
 	text = "%c"%(i+97)
 	color=ColorRGBA(1,0,0,1)
 	end_boxes_marker_array.markers.append(get_marker(b,text=text,color=color,id=i))
 
 # Publishing Marker Arrays
-ini_rovers_markers.publish(ini_rovers_marker_array)
+ini_robots_markers.publish(ini_robots_marker_array)
 ini_boxes_markers.publish(ini_boxes_marker_array)
 end_boxes_markers.publish(end_boxes_marker_array)
 
-ini_rovers_pts = list(index_to_pos(ini_rovers))
+ini_robots_pts = list(index_to_pos(ini_robots))
 ini_boxes_pts = list(index_to_pos(ini_boxes))
 end_boxes_pts = list(index_to_pos(end_boxes))
-solve_problem(ini_rovers_pts, ini_boxes_pts, end_boxes_pts)
 
-plan = solve_problem(ini_rovers_pts, ini_boxes_pts, end_boxes_pts)
+plan = solve_problem(ini_robots_pts, ini_boxes_pts, end_boxes_pts)
 print plan
 
-waypoints = []
-for e in list(pos_to_index(plan.rover_pos)):
-	waypoints.append(get_pos_marker(e))
-
-print 'Ready to go!'
-print waypoints
-
+# Action client
 client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
 client.wait_for_server()
-
 goal = MoveBaseGoal()
 goal.target_pose.header.frame_id = "map"
 
 print "GO!:"
 previous_goal = (0,0)
-for g in range(len(waypoints)):
+current_goal = (0,0)
+for step in plan.steps:
 
 	# print list(pos_to_index(plan.box_pos))[g]
 	# Publishing current box positions
@@ -205,8 +202,11 @@ for g in range(len(waypoints)):
 	# 	end_boxes_marker_array.markers.append(get_marker(b,text=text,color=color,id=i))	
 	# cur_boxes_markers.publish(cur_boxes_marker_array)
 
-	send_angle_goal(previous_goal, waypoints[g])
-	previous_goal = waypoints[g]
-	print "Ok"
+	robot_indexes = list(pos_to_index(step.robot_pos))
+
+	# Single Robot action execution
+	current_goal = get_world_pos(robot_indexes[0])
+	send_angle_goal(previous_goal, current_goal)
+	previous_goal = current_goal
 
 rospy.spin()

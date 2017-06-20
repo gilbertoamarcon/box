@@ -21,6 +21,7 @@ add_message_files(
 	Map.msg
 	Plan.msg
 	Problem.msg
+	Step.msg
 )
 
 # Generate services in the 'srv' folder

@@ -7,7 +7,7 @@
 	<arg name="cam_info_topic" default="/camera/rgb/camera_info" />
 	<arg name="output_frame" default="/camera_rgb_frame" /> -->
 
-	<node pkg="box" name="box_plan" type="box_plan" respawn="true" output="screen">
+	<node pkg="box" name="box_plan" type="box_plan" respawn="false" output="screen">
 <!-- 		<param name="marker_size"           type="double" value="$(arg marker_size)" />
 		<param name="max_new_marker_error"  type="double" value="$(arg max_new_marker_error)" />
 		<param name="max_track_error"       type="double" value="$(arg max_track_error)" />
@@ -16,9 +16,9 @@
 		<remap from="camera_image"  to="$(arg cam_image_topic)" />
 		<remap from="camera_info"   to="$(arg cam_info_topic)" /> -->
 	</node>
-	<node pkg="box" name="box_mapper" type="box_mapper.py" respawn="true" output="screen">
+	<node pkg="box" name="box_mapper" type="box_mapper.py" respawn="false" output="screen">
 	</node>
-	<node pkg="box" name="box_execute" type="box_execute.py" respawn="true" output="screen">
+	<node pkg="box" name="box_execute" type="box_execute.py" respawn="false" output="screen">
 	</node>
 
 </launch>
