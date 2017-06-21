@@ -58,7 +58,7 @@ def pos_to_index(points):
 def request_plan(map,problem):
 	rospy.wait_for_service('box_plan')
 	try:
-		box_plan = rospy.ServiceProxy('box_plan', BoxPlan)
+		box_plan	= rospy.ServiceProxy('box_plan', BoxPlan)
 		resp1 = box_plan(map,problem)
 		return resp1.plan
 	except rospy.ServiceException, e:
@@ -123,19 +123,19 @@ def get_world_pos(index):
 			return marker.pose.position.x, marker.pose.position.y
 	return None
 
-rospy.init_node('boxnav')
+rospy.init_node('box_execute')
 
 box_map = None
 pos_index_markers = None
 
-sub_pos_markers = rospy.Subscriber('/boxmap_marker', MarkerArray, get_pos_index_markers)
-sub_map = rospy.Subscriber('/boxmap', OccupancyGrid, get_map)
+sub_pos_markers		= rospy.Subscriber('/boxmap_marker', MarkerArray, get_pos_index_markers)
+sub_map				= rospy.Subscriber('/boxmap', OccupancyGrid, get_map)
 
 # Marker Array Publishers
-ini_robots_markers = rospy.Publisher('/ini_robots_markers', MarkerArray, queue_size=10,latch=True)
-ini_boxes_markers = rospy.Publisher('/ini_boxes_markers', MarkerArray, queue_size=10,latch=True)
-end_boxes_markers = rospy.Publisher('/end_boxes_markers', MarkerArray, queue_size=10,latch=True)
-cur_boxes_markers = rospy.Publisher('/cur_boxes_markers', MarkerArray, queue_size=10,latch=True)
+ini_robots_markers	= rospy.Publisher('/ini_robots_markers', MarkerArray, queue_size=10,latch=True)
+ini_boxes_markers	= rospy.Publisher('/ini_boxes_markers', MarkerArray, queue_size=10,latch=True)
+end_boxes_markers	= rospy.Publisher('/end_boxes_markers', MarkerArray, queue_size=10,latch=True)
+cur_boxes_markers	= rospy.Publisher('/cur_boxes_markers', MarkerArray, queue_size=10,latch=True)
 
 # Wait for box_map
 print "Waiting for box_map.."
@@ -188,21 +188,23 @@ client.wait_for_server()
 goal = MoveBaseGoal()
 goal.target_pose.header.frame_id = "map"
 
-print "GO!:"
+print "Starting plan execution..."
 previous_goal = (0,0)
 current_goal = (0,0)
 for step in plan.steps:
 
-	# print list(pos_to_index(plan.box_pos))[g]
-	# Publishing current box positions
-	# cur_boxes_marker_array = MarkerArray()
-	# for i,b in enumerate(list(pos_to_index(plan.box_pos))[g]):
-	# 	text = "%c"%(i+65)
-	# 	color=ColorRGBA(0,1,0,1)
-	# 	end_boxes_marker_array.markers.append(get_marker(b,text=text,color=color,id=i))	
-	# cur_boxes_markers.publish(cur_boxes_marker_array)
+	# Robot and Box Positions
+	box_indexes		= list(pos_to_index(step.box_pos))
+	robot_indexes	= list(pos_to_index(step.robot_pos))
 
-	robot_indexes = list(pos_to_index(step.robot_pos))
+	# Publishing current box positions
+	cur_boxes_marker_array = MarkerArray()
+	for i,b in enumerate(box_indexes):
+		text = "%c"%(i+65)
+		255-165-0
+		color=ColorRGBA(1,0.65,0,1)
+		cur_boxes_marker_array.markers.append(get_marker(b,text=text,color=color,id=i))	
+	cur_boxes_markers.publish(cur_boxes_marker_array)
 
 	# Single Robot action execution
 	current_goal = get_world_pos(robot_indexes[0])
