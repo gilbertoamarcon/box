@@ -20,6 +20,7 @@ ini_robots = [69,68]
 ini_boxes = [109,110]
 end_boxes = [57,58]
 
+
 # ============================================
 # Coordinate conversion
 # ============================================
@@ -57,6 +58,7 @@ def index_to_map(index):
 			return marker.pose.position.x, marker.pose.position.y
 	return None
 
+
 # ============================================
 # Message Callbacks
 # ============================================
@@ -71,22 +73,14 @@ def get_pos_index_markers(msg):
 	global pos_index_markers
 	pos_index_markers = msg
 
+
 # ============================================
 # Action Execution
 # ============================================
 
-def send_angle_goal(prev_xy, next_xy):
-	goal.target_pose.pose.position.x = prev_xy[0]
-	goal.target_pose.pose.position.y = prev_xy[1]
-	goal.target_pose.pose.position.z = 0
-	quaternion = quaternion_from_euler(0, 0, math.atan2(next_xy[1] - prev_xy[1], next_xy[0] - prev_xy[0]))
-	goal.target_pose.pose.orientation.x = quaternion[0]
-	goal.target_pose.pose.orientation.y = quaternion[1]
-	goal.target_pose.pose.orientation.z = quaternion[2]
-	goal.target_pose.pose.orientation.w = quaternion[3]
-	client.send_goal(goal)
-	client.wait_for_result(rospy.Duration.from_sec(5))
-
+def send_subgoal(prev_xy, next_xy):
+	goal = MoveBaseGoal()
+	goal.target_pose.header.frame_id = "map"
 	goal.target_pose.pose.position.x = next_xy[0]
 	goal.target_pose.pose.position.y = next_xy[1]
 	goal.target_pose.pose.position.z = 0
@@ -96,7 +90,7 @@ def send_angle_goal(prev_xy, next_xy):
 	goal.target_pose.pose.orientation.z = quaternion[2]
 	goal.target_pose.pose.orientation.w = quaternion[3]
 	client.send_goal(goal)
-	client.wait_for_result(rospy.Duration.from_sec(5))
+	client.wait_for_result(rospy.Duration.from_sec(15))
 
 def request_plan(map,problem):
 	rospy.wait_for_service('box_plan')
@@ -107,36 +101,34 @@ def request_plan(map,problem):
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e
 
-def solve_problem(robotStart, boxStart, boxEnd):
-	problem = Problem()
-	problem.num_robots = len(robotStart)
-	problem.num_boxes = len(boxStart)
+def solve_problem(ini_robot_pts, ini_boxes_pts, end_boxes_pts):
 
-	for pt in robotStart:
+	# Setting up the Problem message
+	problem = Problem()
+	problem.num_robots = len(ini_robot_pts)
+	problem.num_boxes = len(ini_boxes_pts)
+	for pt in ini_robot_pts:
 		problem.initial_robot.append(pt)
-	for pt in boxStart:
+	for pt in ini_boxes_pts:
 		problem.initial_box.append(pt)
-	for pt in boxEnd:
+	for pt in end_boxes_pts:
 		problem.final_box.append(pt)
 
-	# Initializing the Map message
+	# Setting up the Map message
 	plan_map = Map()
-
-	# Parsing  data
-	plan_map.width = box_map.info.width
-	plan_map.height = box_map.info.height
-	plan_map.data = []
+	plan_map.width	= box_map.info.width
+	plan_map.height	= box_map.info.height
+	plan_map.data	= []
 	for entry in box_map.data:
-			if entry == 0:
-				plan_map.data.append(int(0))
-			else:
-				plan_map.data.append(int(1))
-
+		if entry == 0:
+			plan_map.data.append(int(0))
+		else:
+			plan_map.data.append(int(1))
 
 	print "Waiting for plan.."
 	plan = request_plan(plan_map,problem)
-	# print_plan(plan)
 	return plan
+
 
 # ============================================
 # Main
@@ -152,7 +144,7 @@ sub_map				= rospy.Subscriber('/boxmap', OccupancyGrid, get_map)
 sub_pos_markers		= rospy.Subscriber('/boxmap_marker', MarkerArray, get_pos_index_markers)
 
 # Marker Array Publishers
-ini_robots_markers	= rospy.Publisher('/ini_robots_markers', MarkerArray, queue_size=10,latch=True)
+ini_robot_markers	= rospy.Publisher('/ini_robot_markers', MarkerArray, queue_size=10,latch=True)
 ini_boxes_markers	= rospy.Publisher('/ini_boxes_markers', MarkerArray, queue_size=10,latch=True)
 end_boxes_markers	= rospy.Publisher('/end_boxes_markers', MarkerArray, queue_size=10,latch=True)
 cur_boxes_markers	= rospy.Publisher('/cur_boxes_markers', MarkerArray, queue_size=10,latch=True)
@@ -166,6 +158,7 @@ while box_map is None:
 print "Waiting for markers.."
 while pos_index_markers is None:
 	pass
+
 
 # ============================================
 # Publishing Problem Representation Markers
@@ -195,23 +188,26 @@ for i,b in enumerate(end_boxes):
 	end_boxes_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))
 
 # Publishing Marker Arrays
-ini_robots_markers.publish(ini_robots_marker_array)
+ini_robot_markers.publish(ini_robots_marker_array)
 ini_boxes_markers.publish(ini_boxes_marker_array)
 end_boxes_markers.publish(end_boxes_marker_array)
+
 
 # ============================================
 # Indexes to Grid Coordinates
 # ============================================
 
-ini_robots_pts = list(index_to_grid(ini_robots))
+ini_robot_pts = list(index_to_grid(ini_robots))
 ini_boxes_pts = list(index_to_grid(ini_boxes))
 end_boxes_pts = list(index_to_grid(end_boxes))
+
 
 # ============================================
 # Planning
 # ============================================
 
-plan = solve_problem(ini_robots_pts, ini_boxes_pts, end_boxes_pts)
+plan = solve_problem(ini_robot_pts, ini_boxes_pts, end_boxes_pts)
+
 
 # ============================================
 # Execution
@@ -222,12 +218,10 @@ print "Starting plan execution..."
 # Action client setup
 client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
 client.wait_for_server()
-goal = MoveBaseGoal()
-goal.target_pose.header.frame_id = "map"
 
 # Execution loop
-previous_goal = (0,0)
-current_goal = (0,0)
+previous_goal	= (0,0)
+current_goal	= (0,0)
 for step in plan.steps:
 
 	# Current/Goal Robot and Box Positions
@@ -244,7 +238,7 @@ for step in plan.steps:
 
 	# Single Robot action execution
 	current_goal = index_to_map(robot_indexes[0])
-	send_angle_goal(previous_goal, current_goal)
+	send_subgoal(previous_goal, current_goal)
 	previous_goal = current_goal
 
 print "Plan Executed Successfully."
