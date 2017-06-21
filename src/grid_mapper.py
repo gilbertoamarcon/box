@@ -6,27 +6,24 @@ import numpy as np
 from nav_msgs.msg import OccupancyGrid
 from visualization_msgs.msg import Marker, MarkerArray
 
-BOX_RES = 0.4572
 
-def downsample(inp_map):
+def downsample(map):
 
 	# Initializing the map message
-	out_map = copy.deepcopy(inp_map)
+	grid = copy.deepcopy(map)
 
 	# Scaling factors
-	scale = BOX_RES/inp_map.info.resolution
-	out_map.info.resolution = BOX_RES
-	out_map.info.width = int(math.floor(inp_map.info.width/scale))
-	out_map.info.height = int(math.floor(inp_map.info.height/scale))
-	print "Ratio: %.3f" % scale
-	print "Origiinal Map width: %.3f" % inp_map.info.width
-	print "Origiinal Map height: %.3f" % inp_map.info.height
-	print "New map width: %.3f" % out_map.info.width
-	print "New map height: %.3f" % out_map.info.height
+	scale = box_size/map.info.resolution
+	grid.info.resolution = box_size
+	grid.info.width = int(math.floor(map.info.width/scale))
+	grid.info.height = int(math.floor(map.info.height/scale))
+	rospy.loginfo("grid_mapper: Map size: (%d,%d)" % (map.info.width,map.info.height))
+	rospy.loginfo("grid_mapper: Grid size: (%d,%d)" % (grid.info.width,grid.info.height))
+	rospy.loginfo("grid_mapper: Ratio: %.3f" % scale)
 
 	# Allocating buffers
-	inp = np.array(inp_map.data).reshape((inp_map.info.width, inp_map.info.height))
-	out = np.zeros((out_map.info.width, out_map.info.height))
+	inp = np.array(map.data).reshape((map.info.width, map.info.height))
+	out = np.zeros((grid.info.width, grid.info.height))
 
 	# Downsampling
 	for i in range(len(inp)):
@@ -37,48 +34,56 @@ def downsample(inp_map):
 				out[oi][oj] = 100
 
 	# Formatting message data
-	out_map.data = out.reshape((out_map.info.width*out_map.info.height,1))
+	grid.data = out.reshape((grid.info.width*grid.info.height,1))
 
 	# Preparing marker array
-	markerArray = MarkerArray()
-	x_offset = inp_map.info.resolution*inp_map.info.width/2
-	y_offset = inp_map.info.resolution*inp_map.info.height/2
+	marker_array = MarkerArray()
+	x_offset = map.info.resolution*map.info.width/2
+	y_offset = map.info.resolution*map.info.height/2
 	for i in range(len(out)):
 		for j in range(len(out[i])):
 			marker = Marker()
 			marker.header.frame_id = "/map"
 			marker.type = marker.TEXT_VIEW_FACING
 			marker.action = marker.ADD
-			marker.scale.x = BOX_RES/2
-			marker.scale.y = BOX_RES/2
-			marker.scale.z = BOX_RES/2
+			marker.scale.x = box_size/2
+			marker.scale.y = box_size/2
+			marker.scale.z = box_size/2
 			marker.color.a = 0.5
 			marker.color.r = 0.5
 			marker.color.g = 0.5
 			marker.color.b = 0.5
 			marker.pose.orientation.w = 1.0
-			marker.pose.position.x = j*BOX_RES - x_offset + BOX_RES/2
-			marker.pose.position.y = i*BOX_RES - y_offset + BOX_RES/2
-			markerArray.markers.append(marker)
+			marker.pose.position.x = j*box_size - x_offset + box_size/2
+			marker.pose.position.y = i*box_size - y_offset + box_size/2
+			marker_array.markers.append(marker)
 
 	# Marker IDs
 	id = 0
-	for marker in markerArray.markers:
+	for marker in marker_array.markers:
 		marker.id = id
 		marker.text = str(id);
 		id += 1
 
 	# Publishing map
-	boxmap_pub.publish(out_map)
+	grid_pub.publish(grid)
 
 	# Publish the MarkerArray
-	marker_pub.publish(markerArray)
+	marker_pub.publish(marker_array)
 
-
+# Initializing node
 rospy.init_node('grid_mapper')
 
-marker_pub = rospy.Publisher('/boxmap_marker', MarkerArray, queue_size=10,latch=True)
-boxmap_pub = rospy.Publisher('/boxmap', OccupancyGrid, queue_size=10,latch=True)
-subscriber = rospy.Subscriber('/map', OccupancyGrid, downsample)
+# Getting parameters
+box_size			= rospy.get_param('/grid_mapper/box_size', 0.4572)
+map_topic			= rospy.get_param('/map_topic', '/map')
+grid_topic			= rospy.get_param('/grid_topic', '/grid')
+grid_marker_topic	= rospy.get_param('/grid_marker_topic', '/grid_marker')
 
+# Setting up Publishers/Subscribers
+marker_pub	= rospy.Publisher(grid_marker_topic, MarkerArray, queue_size=10,latch=True)
+grid_pub	= rospy.Publisher(grid_topic, OccupancyGrid, queue_size=10,latch=True)
+subscriber	= rospy.Subscriber(map_topic, OccupancyGrid, downsample)
+
+# Waiting for maps
 rospy.spin()

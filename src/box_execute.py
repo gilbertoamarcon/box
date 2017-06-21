@@ -93,13 +93,13 @@ def send_subgoal(prev_xy, next_xy):
 	client.wait_for_result(rospy.Duration.from_sec(15))
 
 def request_plan(grid,problem):
-	rospy.wait_for_service('box_plan')
+	rospy.wait_for_service(box_plan_service)
 	try:
-		box_plan	= rospy.ServiceProxy('box_plan', BoxPlan)
+		box_plan	= rospy.ServiceProxy(box_plan_service, BoxPlan)
 		resp1 = box_plan(grid,problem)
 		return resp1.plan
 	except rospy.ServiceException, e:
-		print "Service call failed: %s"%e
+		rospy.loginfo("box_execute: Service call failed: %s"%e)
 
 def solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid):
 
@@ -125,7 +125,7 @@ def solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid):
 		else:
 			grid.data.append(int(1))
 
-	print "Waiting for plan.."
+	rospy.loginfo("box_execute: Waiting for plan..")
 	plan = request_plan(grid,problem)
 	return plan
 
@@ -136,26 +136,36 @@ def solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid):
 
 rospy.init_node('box_execute')
 
+# Getting parameters
+box_plan_service		= rospy.get_param('/box_plan_service', 'box_plan')
+grid_topic				= rospy.get_param('/grid_topic', '/grid')
+grid_marker_topic		= rospy.get_param('/box_execute/grid_marker_topic', '/grid_marker')
+ini_robot_markers_topic	= rospy.get_param('/grid_markerini_robot_markers_topic', '/ini_robot_markers')
+ini_boxes_markers_topic	= rospy.get_param('/grid_markerini_boxes_markers_topic', '/ini_boxes_markers')
+end_boxes_markers_topic	= rospy.get_param('/grid_markerend_boxes_markers_topic', '/end_boxes_markers')
+cur_boxes_markers_topic	= rospy.get_param('/grid_markercur_boxes_markers_topic', '/cur_boxes_markers')
+move_base_topic			= rospy.get_param('/box_execute/move_base_topic', 'move_base')
+
 map = None
 pos_index_markers = None
 
 # Map and Marker Subscribers
-sub_map				= rospy.Subscriber('/boxmap', OccupancyGrid, get_map)
-sub_pos_markers		= rospy.Subscriber('/boxmap_marker', MarkerArray, get_pos_index_markers)
+sub_pos_markers		= rospy.Subscriber(grid_marker_topic, MarkerArray, get_pos_index_markers)
+sub_map				= rospy.Subscriber(grid_topic, OccupancyGrid, get_map)
 
 # Marker Array Publishers
-ini_robot_markers	= rospy.Publisher('/ini_robot_markers', MarkerArray, queue_size=10,latch=True)
-ini_boxes_markers	= rospy.Publisher('/ini_boxes_markers', MarkerArray, queue_size=10,latch=True)
-end_boxes_markers	= rospy.Publisher('/end_boxes_markers', MarkerArray, queue_size=10,latch=True)
-cur_boxes_markers	= rospy.Publisher('/cur_boxes_markers', MarkerArray, queue_size=10,latch=True)
+ini_robot_markers	= rospy.Publisher(ini_robot_markers_topic, MarkerArray, queue_size=10,latch=True)
+ini_boxes_markers	= rospy.Publisher(ini_boxes_markers_topic, MarkerArray, queue_size=10,latch=True)
+end_boxes_markers	= rospy.Publisher(end_boxes_markers_topic, MarkerArray, queue_size=10,latch=True)
+cur_boxes_markers	= rospy.Publisher(cur_boxes_markers_topic, MarkerArray, queue_size=10,latch=True)
 
 # Wait for map
-print "Waiting for map.."
+rospy.loginfo("box_execute: Waiting for map..")
 while map is None:
 	pass
 
 # Wait for markers
-print "Waiting for markers.."
+rospy.loginfo("box_execute: Waiting for markers..")
 while pos_index_markers is None:
 	pass
 
@@ -213,10 +223,10 @@ plan = solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid)
 # Execution
 # ============================================
 
-print "Starting plan execution..."
+rospy.loginfo("box_execute: Starting plan execution...")
 
 # Action client setup
-client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+client = actionlib.SimpleActionClient(move_base_topic, MoveBaseAction)
 client.wait_for_server()
 
 # Execution loop
@@ -241,6 +251,6 @@ for step in plan.steps:
 	send_subgoal(previous_goal, current_goal)
 	previous_goal = current_goal
 
-print "Plan Executed Successfully."
+rospy.loginfo("box_execute: Plan Executed Successfully.")
 
 rospy.spin()
