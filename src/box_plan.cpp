@@ -1,7 +1,7 @@
 #include "ros/ros.h"
 #include "../include/Search.hpp"
 #include "box/BoxPlan.h"
-#include "box/Map.h"
+#include "box/Grid.h"
 #include "box/Plan.h"
 #include "box/Problem.h"
 #include "box/Step.h"
@@ -15,7 +15,7 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 	Search::epsilon = 1.0;
 
 	// Initializing the map
-	State::map = new Map(int(req.map.width),int(req.map.height),&req.map.data[0]);
+	State::map = new Map(int(req.grid.width),int(req.grid.height),&req.grid.data[0]);
 
 	// Initial and goal states
 	State::start	= new State();

@@ -13,10 +13,10 @@ from box.msg import *
 from box.srv import *
 
 # Problem Description Indexes
-# ini_robots = [69]
+# ini_robot = [69]
 # ini_boxes = [109]
 # end_boxes = [57]
-ini_robots = [69,68]
+ini_robot = [69,68]
 ini_boxes = [109,110]
 end_boxes = [57,58]
 
@@ -28,14 +28,14 @@ end_boxes = [57,58]
 # Grid index to grid position
 def index_to_grid(index_list):
 	for index in index_list:
-		j = index % box_map.info.width
-		i = (index - j)/box_map.info.width
+		j = index % map.info.width
+		i = (index - j)/map.info.width
 		yield Point(i,j,0)
 
 # Grid position to grid index
 def grid_to_index(points):
 	for p in points:
-		yield int(p.x*box_map.info.width + p.y)
+		yield int(p.x*map.info.width + p.y)
 
 # Grid index to marker
 def index_to_marker(index,text=None,color=None,id=None):
@@ -65,8 +65,8 @@ def index_to_map(index):
 
 # Map Callback
 def get_map(msg):
-	global box_map
-	box_map = msg
+	global map
+	map = msg
 
 # Position Marker Callback
 def get_pos_index_markers(msg):
@@ -92,41 +92,41 @@ def send_subgoal(prev_xy, next_xy):
 	client.send_goal(goal)
 	client.wait_for_result(rospy.Duration.from_sec(15))
 
-def request_plan(map,problem):
+def request_plan(grid,problem):
 	rospy.wait_for_service('box_plan')
 	try:
 		box_plan	= rospy.ServiceProxy('box_plan', BoxPlan)
-		resp1 = box_plan(map,problem)
+		resp1 = box_plan(grid,problem)
 		return resp1.plan
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e
 
-def solve_problem(ini_robot_pts, ini_boxes_pts, end_boxes_pts):
+def solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid):
 
 	# Setting up the Problem message
 	problem = Problem()
-	problem.num_robots = len(ini_robot_pts)
-	problem.num_boxes = len(ini_boxes_pts)
-	for pt in ini_robot_pts:
+	problem.num_robots = len(ini_robot_grid)
+	problem.num_boxes = len(ini_boxes_grid)
+	for pt in ini_robot_grid:
 		problem.initial_robot.append(pt)
-	for pt in ini_boxes_pts:
+	for pt in ini_boxes_grid:
 		problem.initial_box.append(pt)
-	for pt in end_boxes_pts:
+	for pt in end_boxes_grid:
 		problem.final_box.append(pt)
 
 	# Setting up the Map message
-	plan_map = Map()
-	plan_map.width	= box_map.info.width
-	plan_map.height	= box_map.info.height
-	plan_map.data	= []
-	for entry in box_map.data:
+	grid = Grid()
+	grid.width	= map.info.width
+	grid.height	= map.info.height
+	grid.data	= []
+	for entry in map.data:
 		if entry == 0:
-			plan_map.data.append(int(0))
+			grid.data.append(int(0))
 		else:
-			plan_map.data.append(int(1))
+			grid.data.append(int(1))
 
 	print "Waiting for plan.."
-	plan = request_plan(plan_map,problem)
+	plan = request_plan(grid,problem)
 	return plan
 
 
@@ -136,7 +136,7 @@ def solve_problem(ini_robot_pts, ini_boxes_pts, end_boxes_pts):
 
 rospy.init_node('box_execute')
 
-box_map = None
+map = None
 pos_index_markers = None
 
 # Map and Marker Subscribers
@@ -149,9 +149,9 @@ ini_boxes_markers	= rospy.Publisher('/ini_boxes_markers', MarkerArray, queue_siz
 end_boxes_markers	= rospy.Publisher('/end_boxes_markers', MarkerArray, queue_size=10,latch=True)
 cur_boxes_markers	= rospy.Publisher('/cur_boxes_markers', MarkerArray, queue_size=10,latch=True)
 
-# Wait for box_map
-print "Waiting for box_map.."
-while box_map is None:
+# Wait for map
+print "Waiting for map.."
+while map is None:
 	pass
 
 # Wait for markers
@@ -165,15 +165,15 @@ while pos_index_markers is None:
 # ============================================
 
 # Marker Arrays
-ini_robots_marker_array	= MarkerArray()
+ini_robot_marker_array	= MarkerArray()
 ini_boxes_marker_array	= MarkerArray()
 end_boxes_marker_array	= MarkerArray()
 
 # Init robot Marker Arrays
-for i,b in enumerate(ini_robots):
+for i,b in enumerate(ini_robot):
 	text = "R%d"%i
 	color=ColorRGBA(0,0,1,1)
-	ini_robots_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))
+	ini_robot_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))
 
 # Init Boxes Marker Arrays
 for i,b in enumerate(ini_boxes):
@@ -188,7 +188,7 @@ for i,b in enumerate(end_boxes):
 	end_boxes_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))
 
 # Publishing Marker Arrays
-ini_robot_markers.publish(ini_robots_marker_array)
+ini_robot_markers.publish(ini_robot_marker_array)
 ini_boxes_markers.publish(ini_boxes_marker_array)
 end_boxes_markers.publish(end_boxes_marker_array)
 
@@ -197,16 +197,16 @@ end_boxes_markers.publish(end_boxes_marker_array)
 # Indexes to Grid Coordinates
 # ============================================
 
-ini_robot_pts = list(index_to_grid(ini_robots))
-ini_boxes_pts = list(index_to_grid(ini_boxes))
-end_boxes_pts = list(index_to_grid(end_boxes))
+ini_robot_grid = list(index_to_grid(ini_robot))
+ini_boxes_grid = list(index_to_grid(ini_boxes))
+end_boxes_grid = list(index_to_grid(end_boxes))
 
 
 # ============================================
 # Planning
 # ============================================
 
-plan = solve_problem(ini_robot_pts, ini_boxes_pts, end_boxes_pts)
+plan = solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid)
 
 
 # ============================================
@@ -225,12 +225,12 @@ current_goal	= (0,0)
 for step in plan.steps:
 
 	# Current/Goal Robot and Box Positions
-	box_indexes		= list(grid_to_index(step.box_pos))
+	boxes_indexes	= list(grid_to_index(step.box_pos))
 	robot_indexes	= list(grid_to_index(step.robot_pos))
 
 	# Publishing current box positions
 	cur_boxes_marker_array = MarkerArray()
-	for i,b in enumerate(box_indexes):
+	for i,b in enumerate(boxes_indexes):
 		text = "%c"%(i+65)
 		color=ColorRGBA(1,0.65,0,1)
 		cur_boxes_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))	

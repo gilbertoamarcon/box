@@ -16,7 +16,7 @@
 		<remap from="camera_image"  to="$(arg cam_image_topic)" />
 		<remap from="camera_info"   to="$(arg cam_info_topic)" /> -->
 	</node>
-	<node pkg="box" name="box_mapper" type="box_mapper.py" respawn="false" output="screen">
+	<node pkg="box" name="grid_mapper" type="grid_mapper.py" respawn="false" output="screen">
 	</node>
 	<node pkg="box" name="box_execute" type="box_execute.py" respawn="false" output="screen">
 	</node>

@@ -75,7 +75,7 @@ def downsample(inp_map):
 	marker_pub.publish(markerArray)
 
 
-rospy.init_node('box_mapper')
+rospy.init_node('grid_mapper')
 
 marker_pub = rospy.Publisher('/boxmap_marker', MarkerArray, queue_size=10,latch=True)
 boxmap_pub = rospy.Publisher('/boxmap', OccupancyGrid, queue_size=10,latch=True)
