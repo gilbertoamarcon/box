@@ -12,12 +12,12 @@
 	<param name="grid_markercur_boxes_markers_topic"	type="string"	value="/box/cur_boxes_markers" />
 
 	<!-- Planner Node -->
-	<node pkg="box" name="box_plan" 	type="box_plan" respawn="false" output="screen">
+<!-- 	<node pkg="box" name="box_plan" 	type="box_plan" respawn="false" output="screen">
 		<param name="max_iterations"	type="int"		value="1000000000" />
 		<param name="time_lim_secs"		type="double"	value="1e3" />
 		<param name="epsilon"			type="double"	value="1.0" />
 		<param name="verbose"			type="bool"		value="false" />
-	</node>
+	</node> -->
 
 	<!-- Grid Mapper -->
 	<node pkg="box" name="grid_mapper"	type="grid_mapper.py" respawn="false" output="screen">
@@ -25,11 +25,11 @@
 	</node>
 
 	<!-- Plan Execution -->
-	<node pkg="box" name="box_execute"	type="box_execute.py" respawn="false" output="screen">
+<!-- 	<node pkg="box" name="box_execute"	type="box_execute.py" respawn="false" output="screen">
 		<param name="move_base_topic"	type="string"		value="move_base" />
-	</node>
+	</node> -->
 
 	<!-- Rviz -->
-	<node name="rviz" pkg="rviz"		type="rviz" args="-d $(find box)/rviz/box.rviz"/>
+	<!-- <node name="rviz" pkg="rviz"		type="rviz" args="-d $(find box)/rviz/box.rviz"/> -->
 
 </launch>
