@@ -3,6 +3,7 @@
 	<!-- Topic Names -->
 	<param name="box_plan_service"						type="string"	value="box_plan" />
 	<param name="map_topic"								type="string"	value="/map" />
+	<param name="robot_pos_topic"						type="string"	value="/amcl_pose" />
 	<param name="grid_topic"							type="string"	value="/box/grid" />
 	<param name="grid_marker_topic"						type="string"	value="/box/grid_marker" />
 	<param name="grid_markerini_robot_markers_topic"	type="string"	value="/box/ini_robot_markers" />
