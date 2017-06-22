@@ -76,9 +76,9 @@ rospy.init_node('grid_mapper')
 
 # Getting parameters
 box_size			= rospy.get_param('/grid_mapper/box_size', 0.4572)
-map_topic			= rospy.get_param('/map_topic', '/map')
-grid_topic			= rospy.get_param('/grid_topic', '/grid')
-grid_marker_topic	= rospy.get_param('/grid_marker_topic', '/grid_marker')
+map_topic			= rospy.get_param('/map_topic')
+grid_topic			= rospy.get_param('/grid_topic')
+grid_marker_topic	= rospy.get_param('/grid_marker_topic')
 
 # Setting up Publishers/Subscribers
 marker_pub	= rospy.Publisher(grid_marker_topic, MarkerArray, queue_size=10,latch=True)

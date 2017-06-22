@@ -13,12 +13,9 @@ from box.msg import *
 from box.srv import *
 
 # Problem Description Indexes
-# ini_robot = [69]
-# ini_boxes = [109]
-# end_boxes = [57]
-ini_robot = [69,68]
-ini_boxes = [109,110]
-end_boxes = [57,58]
+ini_robot = [69]
+ini_boxes = [109]
+end_boxes = [57]
 
 
 # ============================================
@@ -57,6 +54,16 @@ def index_to_map(index):
 		if marker.id == index:
 			return marker.pose.position.x, marker.pose.position.y
 	return None
+
+# Map Coordinates to Index
+def map_to_index(index):
+	min_dist_sqr = 1e12
+	closest_marker = None
+	for marker in pos_index_markers.markers:
+		dist_sqr = marker.pose.position.x**2 + marker.pose.position.y**2
+		if dist_sqr < min_dist_sqr:
+			closest_marker = marker
+	return closest_marker
 
 
 # ============================================
@@ -138,12 +145,12 @@ rospy.init_node('box_execute')
 
 # Getting parameters
 box_plan_service		= rospy.get_param('/box_plan_service', 'box_plan')
-grid_topic				= rospy.get_param('/grid_topic', '/grid')
-grid_marker_topic		= rospy.get_param('/box_execute/grid_marker_topic', '/grid_marker')
-ini_robot_markers_topic	= rospy.get_param('/grid_markerini_robot_markers_topic', '/ini_robot_markers')
-ini_boxes_markers_topic	= rospy.get_param('/grid_markerini_boxes_markers_topic', '/ini_boxes_markers')
-end_boxes_markers_topic	= rospy.get_param('/grid_markerend_boxes_markers_topic', '/end_boxes_markers')
-cur_boxes_markers_topic	= rospy.get_param('/grid_markercur_boxes_markers_topic', '/cur_boxes_markers')
+grid_topic				= rospy.get_param('/grid_topic', '/box/grid')
+grid_marker_topic		= rospy.get_param('/grid_marker_topic', '/box/grid_marker')
+ini_robot_markers_topic	= rospy.get_param('/grid_markerini_robot_markers_topic', '/box/ini_robot_markers')
+ini_boxes_markers_topic	= rospy.get_param('/grid_markerini_boxes_markers_topic', '/box/ini_boxes_markers')
+end_boxes_markers_topic	= rospy.get_param('/grid_markerend_boxes_markers_topic', '/box/end_boxes_markers')
+cur_boxes_markers_topic	= rospy.get_param('/grid_markercur_boxes_markers_topic', '/box/cur_boxes_markers')
 move_base_topic			= rospy.get_param('/box_execute/move_base_topic', 'move_base')
 
 map = None

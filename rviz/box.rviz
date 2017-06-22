@@ -482,12 +482,12 @@ Visualization Manager:
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: /grid
+      Topic: /box/grid
       Unreliable: false
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /grid_marker
+      Marker Topic: /box/grid_marker
       Name: MarkerArray
       Namespaces:
         "": true
@@ -495,7 +495,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /ini_boxes_markers
+      Marker Topic: /box/ini_boxes_markers
       Name: MarkerArray
       Namespaces:
         "": true
@@ -503,7 +503,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /ini_robot_markers
+      Marker Topic: /box/ini_robot_markers
       Name: MarkerArray
       Namespaces:
         "": true
@@ -511,7 +511,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /end_boxes_markers
+      Marker Topic: /box/end_boxes_markers
       Name: MarkerArray
       Namespaces:
         "": true
@@ -519,7 +519,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /cur_boxes_markers
+      Marker Topic: /box/cur_boxes_markers
       Name: MarkerArray
       Namespaces:
         "": true
