@@ -13,11 +13,6 @@ from visualization_msgs.msg import Marker, MarkerArray
 from box.msg import *
 from box.srv import *
 
-# Problem Description Indexes
-ini_boxes = [109]
-end_boxes = [57]
-
-
 # ============================================
 # Coordinate conversion
 # ============================================
@@ -25,14 +20,14 @@ end_boxes = [57]
 # Grid index to grid position
 def index_to_grid(index_list):
 	for index in index_list:
-		j = index % map.info.width
-		i = (index - j)/map.info.width
+		j = index % grid.info.width
+		i = (index - j)/grid.info.width
 		yield Point(i,j,0)
 
 # Grid position to grid index
 def grid_to_index(points):
 	for p in points:
-		yield int(p.x*map.info.width + p.y)
+		yield int(p.x*grid.info.width + p.y)
 
 # Grid index to marker
 def index_to_marker(index,text=None,color=None,id=None):
@@ -72,9 +67,9 @@ def map_to_index(pos):
 # ============================================
 
 # Map Callback
-def get_map(msg):
-	global map
-	map = msg
+def get_grid(msg):
+	global grid
+	grid = msg
 
 # Robot Position Callback
 def get_robot_pos(msg):
@@ -105,11 +100,11 @@ def send_subgoal(prev_xy, next_xy):
 	client.send_goal(goal)
 	client.wait_for_result(rospy.Duration.from_sec(15))
 
-def request_plan(grid,problem):
+def request_plan(grid_map,problem):
 	rospy.wait_for_service(box_plan_service)
 	try:
 		box_plan	= rospy.ServiceProxy(box_plan_service, BoxPlan)
-		resp1 = box_plan(grid,problem)
+		resp1 = box_plan(grid_map,problem)
 		return resp1.plan
 	except rospy.ServiceException, e:
 		rospy.loginfo("box_execute: Service call failed: %s"%e)
@@ -128,18 +123,18 @@ def solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid):
 		problem.final_box.append(pt)
 
 	# Setting up the Map message
-	grid = Grid()
-	grid.width	= map.info.width
-	grid.height	= map.info.height
-	grid.data	= []
-	for entry in map.data:
+	grid_map = Grid()
+	grid_map.width	= grid.info.width
+	grid_map.height	= grid.info.height
+	grid_map.data	= []
+	for entry in grid.data:
 		if entry == 0:
-			grid.data.append(int(0))
+			grid_map.data.append(int(0))
 		else:
-			grid.data.append(int(1))
+			grid_map.data.append(int(1))
 
 	rospy.loginfo("box_execute: Waiting for plan..")
-	plan = request_plan(grid,problem)
+	plan = request_plan(grid_map,problem)
 	return plan
 
 
@@ -160,13 +155,13 @@ end_boxes_markers_topic	= rospy.get_param('/grid_markerend_boxes_markers_topic',
 cur_boxes_markers_topic	= rospy.get_param('/grid_markercur_boxes_markers_topic', '/box/cur_boxes_markers')
 move_base_topic			= rospy.get_param('/box_execute/move_base_topic', 'move_base')
 
-map					= None
+grid				= None
 pos_index_markers	= None
 robot_pos			= None
 
 # Map and Marker Subscribers
 sub_pos_markers		= rospy.Subscriber(grid_marker_topic, MarkerArray, get_pos_index_markers)
-sub_map				= rospy.Subscriber(grid_topic, OccupancyGrid, get_map)
+sub_grid			= rospy.Subscriber(grid_topic, OccupancyGrid, get_grid)
 sub_robot_pos		= rospy.Subscriber(robot_pos_topic, PoseWithCovarianceStamped, get_robot_pos)
 
 # Marker Array Publishers
@@ -177,7 +172,7 @@ cur_boxes_markers	= rospy.Publisher(cur_boxes_markers_topic, MarkerArray, queue_
 
 # Wait for map
 rospy.loginfo("box_execute: Waiting for map..")
-while map is None:
+while grid is None:
 	pass
 
 # Wait for markers
@@ -191,8 +186,20 @@ while robot_pos is None:
 	pass
 
 ini_robot = [map_to_index(robot_pos)]
-print "HERE",ini_robot
 
+# ============================================
+# User Input From Terminal
+# ============================================
+
+# Current Box Positions
+print "Enter the current box position indexes: ",
+s = raw_input()
+ini_boxes = map(int, s.split())
+
+# Goal Box Positions
+print "Enter the goal box position indexes: ",
+s = raw_input()
+end_boxes = map(int, s.split())
 
 # ============================================
 # Publishing Problem Representation Markers
