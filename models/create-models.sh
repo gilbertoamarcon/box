@@ -10,7 +10,7 @@
 
 # Low Walls
 ./purge-model.sh low_wall
-./create-model-box.sh low_wall wall.jpg 4 0.1 0.5 1 0.125 0.5
+./create-model-box.sh low_wall wall.jpg 8 0.1 0.5 1 0.125 0.5
 
 # Low pillars
 ./purge-model.sh low_pillar
@@ -18,4 +18,4 @@
 
 # Floor
 ./purge-model.sh floor
-./create-model-flat.sh floor floor.jpg 4 4 0.25 0.25
+./create-model-flat.sh floor floor.jpg 8 8 0.125 0.125

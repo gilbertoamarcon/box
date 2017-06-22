@@ -63,14 +63,14 @@
 		<model name='wall_1'>
 			<include>
 				<uri>model://low_wall</uri>
-				<pose>0.05 2 0.25 0 0 0</pose>
+				<pose>0.05 4 0.25 0 0 0</pose>
 			</include>
 		</model>
 
 		<model name='wall_2'>
 			<include>
 				<uri>model://low_wall</uri>
-				<pose>-0.05 -2 0.25 0 0 0</pose>
+				<pose>-0.05 -4 0.25 0 0 0</pose>
 			</include>
 		</model>
 
@@ -78,7 +78,7 @@
 		<model name='wall_3'>
 			<include>
 				<uri>model://low_wall</uri>
-				<pose>2 -0.05 0.25 0 0 1.5708</pose>
+				<pose>4 -0.05 0.25 0 0 1.5708</pose>
 			</include>
 		</model>
 
@@ -87,7 +87,7 @@
 			<include>
 				<uri>model://low_wall</uri>
 			</include>
-			<pose>-2 0.05 0.25 0 0 1.5708</pose>
+			<pose>-4 0.05 0.25 0 0 1.5708</pose>
 		</model>
 
 
