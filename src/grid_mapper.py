@@ -30,8 +30,9 @@ def downsample(map):
 		for j in range(len(inp[i])):
 			oi = int(math.floor(i/scale))
 			oj = int(math.floor(j/scale))
-			if inp[i][j] > 50 or inp[i][j] == -1:
-				out[oi][oj] = 100
+			if oi < grid.info.width and oj < grid.info.height:
+				if inp[i][j] > 50 or inp[i][j] == -1:
+					out[oi][oj] = 100
 
 	# Formatting message data
 	grid.data = out.reshape((grid.info.width*grid.info.height,1))
@@ -46,9 +47,9 @@ def downsample(map):
 			marker.header.frame_id = "/map"
 			marker.type = marker.TEXT_VIEW_FACING
 			marker.action = marker.ADD
-			marker.scale.x = box_size/2
-			marker.scale.y = box_size/2
-			marker.scale.z = box_size/2
+			marker.scale.x = box_size/3
+			marker.scale.y = box_size/3
+			marker.scale.z = box_size/3
 			marker.color.a = 0.5
 			marker.color.r = 0.5
 			marker.color.g = 0.5

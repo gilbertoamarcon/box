@@ -12,7 +12,7 @@
 	<param name="grid_markercur_boxes_markers_topic"	type="string"	value="/box/cur_boxes_markers" />
 
 	<!-- Planner Node -->
-	<node pkg="box" name="box_plan" 	type="box_plan" respawn="true" output="screen">
+	<node pkg="box" name="box_plan" 	type="box_plan" respawn="false" output="screen">
 		<param name="max_iterations"	type="int"		value="1000000000" />
 		<param name="time_lim_secs"		type="double"	value="1e3" />
 		<param name="epsilon"			type="double"	value="1.0" />
@@ -20,7 +20,7 @@
 	</node>
 
 	<!-- Grid Mapper -->
-	<node pkg="box" name="grid_mapper"	type="grid_mapper.py" respawn="true" output="screen">
+	<node pkg="box" name="grid_mapper"	type="grid_mapper.py" respawn="false" output="screen">
 		<param name="box_size"			type="double"	value="0.4572" />
 	</node>
 
