@@ -28,6 +28,9 @@ cat > ~/.gazebo/models/$1/model.sdf <<- EOM
     <model name="$1">
         <static>$6</static>
         <link name="link">
+            <inertial>
+                <mass>0.01</mass>
+            </inertial>
             <collision name="collision">
                 <geometry>
                     <box>
@@ -37,8 +40,8 @@ cat > ~/.gazebo/models/$1/model.sdf <<- EOM
                 <surface>
                     <friction>
                         <ode>
-                            <mu>0.05</mu>
-                            <mu2>0.05</mu2>
+                            <mu>0.01</mu>
+                            <mu2>0.01</mu2>
                         </ode>
                     </friction>
                 </surface>

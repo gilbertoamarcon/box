@@ -32,4 +32,7 @@
 	<!-- Rviz -->
 	<node name="rviz" pkg="rviz"		type="rviz" args="-d $(find box)/rviz/box.rviz"/>
 
+	<!-- Disabling Turtlebot Safety Controller -->
+	<node pkg="rostopic" type="rostopic" name="rostopic" args="pub /kobuki_safety_controller/disable std_msgs/Empty"/>
+
 </launch>
