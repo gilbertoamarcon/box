@@ -11,18 +11,26 @@
 	<param name="grid_markerend_boxes_markers_topic"	type="string"	value="/box/end_boxes_markers" />
 	<param name="grid_markercur_boxes_markers_topic"	type="string"	value="/box/cur_boxes_markers" />
 
-	<!-- Planner Node -->
-	<node pkg="box" name="box_plan" 	type="box_plan" respawn="false" output="screen">
-		<param name="max_iterations"	type="int"		value="1000000000" />
-		<param name="time_lim_secs"		type="double"	value="1e3" />
-		<param name="epsilon"			type="double"	value="1.0" />
-		<param name="verbose"			type="bool"		value="false" />
-	</node>
-
 	<!-- Grid Mapper -->
 	<node pkg="box" name="grid_mapper"	type="grid_mapper.py" respawn="false" output="screen">
 		<param name="box_size"			type="double"	value="0.4572" />
 	</node>
+
+	<!-- Planner Interface -->
+	<node pkg="box" name="box_plan_iface"	type="box_plan_iface.py" respawn="false" output="screen">
+		<param name="verbose"			type="bool"			value="false" />
+		<param name="problem_csv"		type="string"		value="$(find box)/temp/problem_csv.csv" />
+		<param name="planner_script"	type="string"		value="$(find box)/scripts/planning.sh" />
+		<param name="solution"			type="string"		value="$(find box)/temp/solution" />
+	</node>
+
+	<!-- Planner Node -->
+	<!-- <node pkg="box" name="box_plan" 	type="box_plan" respawn="false" output="screen"> -->
+		<!-- <param name="max_iterations"	type="int"		value="1000000000" /> -->
+		<!-- <param name="time_lim_secs"		type="double"	value="1e3" /> -->
+		<!-- <param name="epsilon"			type="double"	value="1.0" /> -->
+		<!-- <param name="verbose"			type="bool"		value="false" /> -->
+	<!-- </node> -->
 
 	<!-- Plan Execution -->
 	<node pkg="box" name="box_execute"	type="box_execute.py" respawn="false" output="screen">
