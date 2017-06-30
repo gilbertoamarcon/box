@@ -58,7 +58,7 @@ def read_plan(req):
 	plan.num_robots = req.problem.num_robots
 	plan.num_boxes = req.problem.num_boxes
 
-	rospy.loginfo("box_plan_iface: Reading plan file %s" % solution)
+	rospy.loginfo("box_plan: Reading plan file %s" % solution)
 
 	# Flags and buffers
 	initial_step = True
@@ -148,20 +148,20 @@ def plan(req):
 if __name__ == "__main__":
 
 	#  Initializing node
-	rospy.init_node('box_plan_iface')
+	rospy.init_node('box_plan')
 
 	# Getting parameters
 	box_plan_service	= rospy.get_param('/box_plan_service', 'box_plan')
-	verbose				= rospy.get_param('/box_plan_iface/verbose', False)
-	problem_csv			= rospy.get_param('/box_plan_iface/problem_csv', '$(find box)/temp/problem_csv.csv')
-	planner_script		= rospy.get_param('/box_plan_iface/planner_script', '$(find box)/scripts/planning.sh')
-	solution			= rospy.get_param('/box_plan_iface/solution', '$(find box)/temp/solution')
+	verbose				= rospy.get_param('/box_plan/verbose', False)
+	problem_csv			= rospy.get_param('/box_plan/problem_csv', '$(find box)/temp/problem_csv.csv')
+	planner_script		= rospy.get_param('/box_plan/planner_script', '$(find box)/scripts/planning.sh')
+	solution			= rospy.get_param('/box_plan/solution', '$(find box)/temp/solution')
 
 	# Initializing planning service
 	service = rospy.Service(box_plan_service, BoxPlan, plan)
 
 	# Ready message
-	rospy.loginfo("box_plan_iface: Ready to box-plan.")
+	rospy.loginfo("box_plan: Ready to box-plan.")
 
 	# Waiting for requests
 	rospy.spin()

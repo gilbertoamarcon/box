@@ -1,7 +1,7 @@
 <launch>
 
 	<!-- Topic Names -->
-	<param name="box_plan_service"						type="string"	value="box_plan" />
+	<param name="box_plan_service"						type="string"	value="box_plan_optimal" />
 	<param name="map_topic"								type="string"	value="/map" />
 	<param name="robot_pos_topic"						type="string"	value="/amcl_pose" />
 	<param name="grid_topic"							type="string"	value="/box/grid" />
@@ -16,12 +16,12 @@
 		<param name="box_size"			type="double"	value="0.4572" />
 	</node>
 
-	<!-- General Planner -->
-	<node pkg="box" name="box_plan"	type="box_plan.py" respawn="false" output="screen">
-		<param name="verbose"			type="bool"			value="false" />
-		<param name="problem_csv"		type="string"		value="$(find box)/temp/problem_csv.csv" />
-		<param name="planner_script"	type="string"		value="$(find box)/scripts/planning.sh" />
-		<param name="solution"			type="string"		value="$(find box)/temp/solution" />
+	<!-- Optimal Planner -->
+	<node pkg="box" name="box_plan_optimal" 	type="box_plan_optimal" respawn="false" output="screen">
+		<param name="max_iterations"	type="int"		value="1000000000" />
+		<param name="time_lim_secs"		type="double"	value="1e3" />
+		<param name="epsilon"			type="double"	value="1.0" />
+		<param name="verbose"			type="bool"		value="false" />
 	</node>
 
 	<!-- Plan Execution -->

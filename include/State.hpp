@@ -80,7 +80,7 @@ class State{
 		char print_buffer[BUFFER_SIZE];
 
 		// Recursive action vector expansion
-		void expand_action_vector(string action_vector, int i, char action, stack<State*> *children);
+		void expand_action_vector(string action_vector, int i, char *action, stack<State*> *children);
 		
 		// Validate state against world rules
 		bool validate();

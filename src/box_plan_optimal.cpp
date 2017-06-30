@@ -25,19 +25,19 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 	for(auto& pos : req.problem.final_box)
 		State::goal->boxes.push_back(Pos(int(pos.x),int(pos.y)));
 
-	ROS_INFO("box_plan: Problem received.");
+	ROS_INFO("box_plan_optimal: Problem received.");
 	if(verbose)
 		State::display_world(State::start);
 
 	// Running and taking execution time
-	ROS_INFO("box_plan: Planning started...");
+	ROS_INFO("box_plan_optimal: Planning started...");
 	Search::search();
-	ROS_INFO("box_plan: Planning finished.");
+	ROS_INFO("box_plan_optimal: Planning finished.");
 
 	// Presenting stats on screen
-	ROS_INFO("box_plan: %d expanded nodes.",Search::num_exp_nodes);
-	ROS_INFO("box_plan: %d actions.",int(Search::plan.size()));
-	ROS_INFO("box_plan: %f seconds.",Search::planning_time);
+	ROS_INFO("box_plan_optimal: %d expanded nodes.",Search::num_exp_nodes);
+	ROS_INFO("box_plan_optimal: %d actions.",int(Search::plan.size()));
+	ROS_INFO("box_plan_optimal: %f seconds.",Search::planning_time);
 
 	// Setting up return value (plan) and printing results
 	if(Search::num_exp_nodes > 0){
@@ -75,8 +75,8 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 		}
 	}
 	else
-		ROS_INFO("box_plan: Plan failed.\n");
-	ROS_INFO("box_plan: Ready to box-plan.");
+		ROS_INFO("box_plan_optimal: Plan failed.\n");
+	ROS_INFO("box_plan_optimal: Ready to box-plan.");
 
 	// Cleanup
 	delete State::map;
@@ -87,21 +87,21 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 int main(int argc, char **argv){
 
 	// Initializing node
-	ros::init(argc, argv, "box_plan");
+	ros::init(argc, argv, "box_plan_optimal");
 	ros::NodeHandle n;
 
 	// Getting parameters
-	n.param<int>("/box_plan/max_iterations", Search::max_iterations,1e9);
-	n.param<float>("/box_plan/time_lim_secs", Search::time_lim_secs,1e2);
-	n.param<float>("/box_plan/epsilon", Search::epsilon,1.0);
-	n.param<bool>("/box_plan/verbose", verbose,false);
+	n.param<int>("/box_plan_optimal/max_iterations", Search::max_iterations,1e9);
+	n.param<float>("/box_plan_optimal/time_lim_secs", Search::time_lim_secs,1e2);
+	n.param<float>("/box_plan_optimal/epsilon", Search::epsilon,1.0);
+	n.param<bool>("/box_plan_optimal/verbose", verbose,false);
 	n.param<string>("/box_plan_service", box_plan_service,"box_plan");
 
 	// Initializing planning service
 	ros::ServiceServer service = n.advertiseService(box_plan_service, plan);
 
 	// Ready message
-	ROS_INFO("box_plan: Ready to box-plan.");
+	ROS_INFO("box_plan_optimal: Ready to box-plan.");
 
 	// Waiting for requests
 	ros::spin();

@@ -120,11 +120,11 @@ void State::expand(stack<State*> *children){
 }
 
 // Recursive action vector expansion
-void State::expand_action_vector(string action_vector, int r, char action, stack<State*> *children){
+void State::expand_action_vector(string action_vector, int r, char *action, stack<State*> *children){
 
 	// Adding action to action vector if not root node
 	if(action != NULL)
-		action_vector.push_back(action);
+		action_vector.push_back(*action);
 
 	// Leaf node, create and validate children 
 	if(r-- == 0){
@@ -137,11 +137,12 @@ void State::expand_action_vector(string action_vector, int r, char action, stack
 	}
 
 	// Recursive expansion
-	expand_action_vector(action_vector,r,'N',children);
-	expand_action_vector(action_vector,r,'L',children);
-	expand_action_vector(action_vector,r,'U',children);
-	expand_action_vector(action_vector,r,'R',children);
-	expand_action_vector(action_vector,r,'D',children);
+	char aux;
+	aux = 'N'; expand_action_vector(action_vector,r,&aux,children);
+	aux = 'L'; expand_action_vector(action_vector,r,&aux,children);
+	aux = 'U'; expand_action_vector(action_vector,r,&aux,children);
+	aux = 'R'; expand_action_vector(action_vector,r,&aux,children);
+	aux = 'D'; expand_action_vector(action_vector,r,&aux,children);
 }
 
 // Check if a set of box coordinates would result in a deadlock
