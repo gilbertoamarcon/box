@@ -146,13 +146,13 @@ rospy.init_node('box_execute')
 
 # Getting parameters
 box_plan_service		= rospy.get_param('/box_plan_service', 'box_plan')
-robot_pos_topic			= rospy.get_param('/robot_pos_topic', '/amcl_pose')
 grid_topic				= rospy.get_param('/grid_topic', '/box/grid')
 grid_marker_topic		= rospy.get_param('/grid_marker_topic', '/box/grid_marker')
 ini_robot_markers_topic	= rospy.get_param('/grid_markerini_robot_markers_topic', '/box/ini_robot_markers')
 ini_boxes_markers_topic	= rospy.get_param('/grid_markerini_boxes_markers_topic', '/box/ini_boxes_markers')
 end_boxes_markers_topic	= rospy.get_param('/grid_markerend_boxes_markers_topic', '/box/end_boxes_markers')
 cur_boxes_markers_topic	= rospy.get_param('/grid_markercur_boxes_markers_topic', '/box/cur_boxes_markers')
+robot_pos_topic			= rospy.get_param('/box_execute/robot_pos_topic', '/amcl_pose')
 move_base_topic			= rospy.get_param('/box_execute/move_base_topic', 'move_base')
 
 grid				= None

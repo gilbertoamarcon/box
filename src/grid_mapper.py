@@ -6,7 +6,6 @@ import numpy as np
 from nav_msgs.msg import OccupancyGrid
 from visualization_msgs.msg import Marker, MarkerArray
 
-
 def downsample(map):
 
 	# Initializing the map message
@@ -44,7 +43,7 @@ def downsample(map):
 	for i in range(len(out)):
 		for j in range(len(out[i])):
 			marker = Marker()
-			marker.header.frame_id = "/map"
+			marker.header.frame_id = map_frame_id
 			marker.type = marker.TEXT_VIEW_FACING
 			marker.action = marker.ADD
 			marker.scale.x = box_size/3
@@ -77,9 +76,10 @@ rospy.init_node('grid_mapper')
 
 # Getting parameters
 box_size			= rospy.get_param('/grid_mapper/box_size', 0.4572)
-map_topic			= rospy.get_param('/map_topic')
-grid_topic			= rospy.get_param('/grid_topic')
-grid_marker_topic	= rospy.get_param('/grid_marker_topic')
+map_frame_id		= rospy.get_param('/grid_mapper/map_frame_id','/map')
+map_topic			= rospy.get_param('/grid_mapper/map_topic','/map')
+grid_topic			= rospy.get_param('/grid_topic','/box/grid')
+grid_marker_topic	= rospy.get_param('/grid_marker_topic','/box/grid_marker')
 
 # Setting up Publishers/Subscribers
 marker_pub	= rospy.Publisher(grid_marker_topic, MarkerArray, queue_size=10,latch=True)
