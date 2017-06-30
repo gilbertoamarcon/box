@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import rospy
+import sys
 import math
 import copy
 import numpy as np
@@ -25,12 +26,14 @@ def downsample(map):
 	out = np.zeros((grid.info.width, grid.info.height))
 
 	# Downsampling
+	downsampling_offset = 0.0
 	for i in range(len(inp)):
 		for j in range(len(inp[i])):
-			oi = int(math.floor(i/scale))
-			oj = int(math.floor(j/scale))
-			if oi < grid.info.width and oj < grid.info.height:
-				if inp[i][j] > 50 or inp[i][j] == -1:
+			oi = int(math.floor(i/scale+downsampling_offset))
+			oj = int(math.floor(j/scale+downsampling_offset))
+			if oi < grid.info.width and oj < grid.info.height and oi >= 0 and oj >= 0:
+				map_val = inp[i][j]
+				if map_val > 50 or map_val == -1:
 					out[oi][oj] = 100
 
 	# Formatting message data
@@ -54,8 +57,8 @@ def downsample(map):
 			marker.color.g = 0.5
 			marker.color.b = 0.5
 			marker.pose.orientation.w = 1.0
-			marker.pose.position.x = j*box_size - x_offset + box_size/2
-			marker.pose.position.y = i*box_size - y_offset + box_size/2
+			marker.pose.position.x = j*box_size - x_offset + box_size/4 + downsampling_offset*box_size
+			marker.pose.position.y = i*box_size - y_offset + box_size/4 + downsampling_offset*box_size
 			marker_array.markers.append(marker)
 
 	# Marker IDs
