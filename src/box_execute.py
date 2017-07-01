@@ -185,103 +185,106 @@ rospy.loginfo("box_execute: Waiting for robot position..")
 while robot_pos is None:
 	pass
 
-ini_robot = [map_to_index(robot_pos)]
-
 # ============================================
 # User Input From Terminal
 # ============================================
 
-# Current Box Positions
-print "Enter the current box position indexes: ",
-s = raw_input()
-ini_boxes = map(int, s.split())
+while True:
 
-# Goal Box Positions
-print "Enter the goal box position indexes: ",
-s = raw_input()
-end_boxes = map(int, s.split())
+	# Current Robot Positions
+	ini_robot = [map_to_index(robot_pos)]
 
-# ============================================
-# Publishing Problem Representation Markers
-# ============================================
+	# Current Box Positions
+	print "Enter the current box position indexes: ",
+	s = raw_input()
+	ini_boxes = map(int, s.split())
 
-# Marker Arrays
-ini_robot_marker_array	= MarkerArray()
-ini_boxes_marker_array	= MarkerArray()
-end_boxes_marker_array	= MarkerArray()
+	# Goal Box Positions
+	print "Enter the goal box position indexes: ",
+	s = raw_input()
+	end_boxes = map(int, s.split())
 
-# Init robot Marker Arrays
-for i,b in enumerate(ini_robot):
-	text = "R%d"%i
-	color=ColorRGBA(0,0,1,1)
-	ini_robot_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))
+	# ============================================
+	# Publishing Problem Representation Markers
+	# ============================================
 
-# Init Boxes Marker Arrays
-for i,b in enumerate(ini_boxes):
-	text = "%c"%(i+65)
-	color=ColorRGBA(1,0,0,1)
-	ini_boxes_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))
+	# Marker Arrays
+	ini_robot_marker_array	= MarkerArray()
+	ini_boxes_marker_array	= MarkerArray()
+	end_boxes_marker_array	= MarkerArray()
 
-# Final robot Marker Arrays
-for i,b in enumerate(end_boxes):
-	text = "%c"%(i+97)
-	color=ColorRGBA(1,0,0,1)
-	end_boxes_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))
+	# Init robot Marker Arrays
+	for i,b in enumerate(ini_robot):
+		text = "R%d"%i
+		color=ColorRGBA(0,0,1,1)
+		ini_robot_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))
 
-# Publishing Marker Arrays
-ini_robot_markers.publish(ini_robot_marker_array)
-ini_boxes_markers.publish(ini_boxes_marker_array)
-end_boxes_markers.publish(end_boxes_marker_array)
-
-
-# ============================================
-# Indexes to Grid Coordinates
-# ============================================
-
-ini_robot_grid = list(index_to_grid(ini_robot))
-ini_boxes_grid = list(index_to_grid(ini_boxes))
-end_boxes_grid = list(index_to_grid(end_boxes))
-
-
-# ============================================
-# Planning
-# ============================================
-
-plan = solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid)
-
-
-# ============================================
-# Execution
-# ============================================
-
-rospy.loginfo("box_execute: Starting plan execution...")
-
-# Action client setup
-client = actionlib.SimpleActionClient(move_base_topic, MoveBaseAction)
-client.wait_for_server()
-
-# Execution loop
-previous_goal	= (0,0)
-current_goal	= (0,0)
-for step in plan.steps:
-
-	# Current/Goal Robot and Box Positions
-	boxes_indexes	= list(grid_to_index(step.box_pos))
-	robot_indexes	= list(grid_to_index(step.robot_pos))
-
-	# Publishing current box positions
-	cur_boxes_marker_array = MarkerArray()
-	for i,b in enumerate(boxes_indexes):
+	# Init Boxes Marker Arrays
+	for i,b in enumerate(ini_boxes):
 		text = "%c"%(i+65)
-		color=ColorRGBA(1,0.65,0,1)
-		cur_boxes_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))	
-	cur_boxes_markers.publish(cur_boxes_marker_array)
+		color=ColorRGBA(1,0,0,1)
+		ini_boxes_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))
 
-	# Single Robot action execution
-	current_goal = index_to_map(robot_indexes[0])
-	send_subgoal(previous_goal, current_goal)
-	previous_goal = current_goal
+	# Final robot Marker Arrays
+	for i,b in enumerate(end_boxes):
+		text = "%c"%(i+97)
+		color=ColorRGBA(1,0,0,1)
+		end_boxes_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))
 
-rospy.loginfo("box_execute: Plan Executed Successfully.")
+	# Publishing Marker Arrays
+	ini_robot_markers.publish(ini_robot_marker_array)
+	ini_boxes_markers.publish(ini_boxes_marker_array)
+	end_boxes_markers.publish(end_boxes_marker_array)
+
+
+	# ============================================
+	# Indexes to Grid Coordinates
+	# ============================================
+
+	ini_robot_grid = list(index_to_grid(ini_robot))
+	ini_boxes_grid = list(index_to_grid(ini_boxes))
+	end_boxes_grid = list(index_to_grid(end_boxes))
+
+
+	# ============================================
+	# Planning
+	# ============================================
+
+	plan = solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid)
+
+
+	# ============================================
+	# Execution
+	# ============================================
+
+	rospy.loginfo("box_execute: Starting plan execution...")
+
+	# Action client setup
+	client = actionlib.SimpleActionClient(move_base_topic, MoveBaseAction)
+	client.wait_for_server()
+
+	# Execution loop
+	previous_goal	= (0,0)
+	current_goal	= (0,0)
+	for step in plan.steps:
+
+		# Current/Goal Robot and Box Positions
+		boxes_indexes	= list(grid_to_index(step.box_pos))
+		robot_indexes	= list(grid_to_index(step.robot_pos))
+
+		# Publishing current box positions
+		cur_boxes_marker_array = MarkerArray()
+		for i,b in enumerate(boxes_indexes):
+			text = "%c"%(i+65)
+			color=ColorRGBA(1,0.65,0,1)
+			cur_boxes_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))	
+		cur_boxes_markers.publish(cur_boxes_marker_array)
+
+		# Single Robot action execution
+		current_goal = index_to_map(robot_indexes[0])
+		send_subgoal(previous_goal, current_goal)
+		previous_goal = current_goal
+
+	rospy.loginfo("box_execute: Plan Executed Successfully.")
 
 rospy.spin()
