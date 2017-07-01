@@ -40,8 +40,8 @@ cat > ~/.gazebo/models/$1/model.sdf <<- EOM
                 <surface>
                     <friction>
                         <ode>
-                            <mu>0.01</mu>
-                            <mu2>0.01</mu2>
+                            <mu>0.02</mu>
+                            <mu2>0.02</mu2>
                         </ode>
                     </friction>
                 </surface>

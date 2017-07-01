@@ -14,6 +14,8 @@ Basic Install: cd into models and:
 
 ```create-all.sh```
 
+Run catkin_make at the workspace root.
+
 
 Usage: 
 
