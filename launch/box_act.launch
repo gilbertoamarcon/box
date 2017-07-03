@@ -1,0 +1,23 @@
+<launch>
+
+	<!-- Command line arguments -->
+	<arg name="arg_robot_id"  default="$(env ROBOT_ID)"/>
+	<arg name="arg_shared_dir"  default="$(env SHARED_DIR)"/>
+
+	<!-- Shared Directory -->
+	<param name="shared_dir"							type="string"	value="$(arg arg_shared_dir)" />
+	<param name="goal_pos_file_format"					type="string"	value="%s/goal_pos_%03d" />
+	<param name="current_pos_file_format"				type="string"	value="%s/current_pos_%03d" />
+
+	<!-- Plan Execution -->
+	<node pkg="box" name="box_act"	type="box_act.py" respawn="false" output="screen">
+		<param name="robot_id"			type="int"		value="$(arg arg_robot_id)" />
+		<param name="robot_pos_topic"	type="string"	value="/amcl_pose" />
+		<param name="move_base_topic"	type="string"	value="move_base" />
+	</node>
+
+	<!-- Disabling Turtlebot Safety Controller -->
+	<node pkg="rostopic" type="rostopic" name="rostopic" args="pub /kobuki_safety_controller/disable std_msgs/Empty"/>
+
+</launch>
+
