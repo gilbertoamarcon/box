@@ -1,15 +1,15 @@
 #!/bin/bash
 
 ## Usage: 
-# ./robot.sh gil@deskhp $HOME/Public 0
+# ./robot.sh gil@deskhp 0
 
 # Getting command line args
+arg_shared_dir=$HOME/Public
 remote_server=$1
-arg_shared_dir=$2
-arg_robot_id=$3
+arg_robot_id=$2
 
 # Mounting shared folder
-# sshfs $remote_server:$arg_shared_dir $arg_shared_dir
+sshfs $remote_server:$arg_shared_dir $arg_shared_dir
 
 # Running launch file
 roslaunch box box_act.launch arg_shared_dir:=$arg_shared_dir arg_robot_id:=$arg_robot_id 

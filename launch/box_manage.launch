@@ -1,8 +1,8 @@
 <launch>
 
 	<!-- Command line arguments -->
-	<arg name="arg_num_robots"  default="$(env NUM_ROBOTS)"/>
-	<arg name="arg_shared_dir"  default="$(env SHARED_DIR)"/>
+	<arg name="arg_num_robots" />
+	<arg name="arg_shared_dir" />
 
 	<!-- Topic Names -->
 	<param name="box_plan_service"						type="string"	value="box_plan" />

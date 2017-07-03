@@ -1,8 +1,8 @@
 <launch>
 
 	<!-- Command line arguments -->
-	<arg name="arg_robot_id"  default="$(env ROBOT_ID)"/>
-	<arg name="arg_shared_dir"  default="$(env SHARED_DIR)"/>
+	<arg name="arg_robot_id" />
+	<arg name="arg_shared_dir" />
 
 	<!-- Shared Directory -->
 	<param name="shared_dir"							type="string"	value="$(arg arg_shared_dir)" />
