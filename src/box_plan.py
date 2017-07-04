@@ -125,10 +125,10 @@ def read_plan(req):
 			# Pushing to plan
 			if new_time_step or initial_step:
 				step = Step()
-				for i in robots:
-					step.robot_pos.append(robots[i]);
-				for i in boxes:
-					step.box_pos.append(boxes[i]);
+				for k in sorted(robots.keys()):
+					step.robot_pos.append(robots[k]);
+				for k in sorted(boxes.keys()):
+					step.box_pos.append(boxes[k]);
 				plan.steps.append(step);
 				initial_step = False
 
