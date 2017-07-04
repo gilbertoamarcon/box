@@ -9,6 +9,7 @@ remote_server=$1
 robot_id=$2
 
 # Mounting shared folder
+rm $shared_dir/* > /dev/null 2>&1
 sshfs $remote_server:$shared_dir $shared_dir
 
 # Running launch file

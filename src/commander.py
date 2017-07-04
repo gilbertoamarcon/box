@@ -12,7 +12,7 @@ from tf.transformations import quaternion_from_euler
 from visualization_msgs.msg import Marker, MarkerArray
 from box.msg import *
 from box.srv import *
-from file_utils import *
+from FileComm import *
 
 # ============================================
 # Coordinate conversion
@@ -180,7 +180,7 @@ while True:
 	rospy.loginfo("commander: Waiting for robot positions...")
 	ini_robot = []
 	for i in range(num_robots):
-		ini_robot.append(map_to_index(read_pos(current_pos_file[i])))
+		ini_robot.append(map_to_index(FileComm.read_pos(current_pos_file[i])))
 
 	# Current Box Positions
 	print "Enter the current box position indexes: ",
@@ -264,7 +264,7 @@ while True:
 
 		# Writing goal robot positions
 		for i in range(num_robots):
-			write_pos(goal_pos_file[i],index_to_map(robot_indexes[i]))
+			FileComm.write_pos(goal_pos_file[i],index_to_map(robot_indexes[i]))
 
 		# Waiting for all robots to complete their actions
 		for i in range(num_robots):
