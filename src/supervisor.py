@@ -85,7 +85,7 @@ while True:
 	send_subgoal(previous_goal, current_goal)
 	previous_goal = current_goal
 	FileComm.remove_file(goal_pos_file)
-	rospy.loginfo("supervisor: Action %d Executed Successfully.")
+	rospy.loginfo("supervisor: Action Executed Successfully.")
 
 	# Current robot position
 	FileComm.write_pos(current_pos_file,robot_pos)

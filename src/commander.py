@@ -1,14 +1,9 @@
 #!/usr/bin/env python
-import os
-import csv
-import math
 import copy
 import rospy
-import actionlib
 from std_msgs.msg import ColorRGBA
 from nav_msgs.msg import OccupancyGrid
 from geometry_msgs.msg import Point
-from tf.transformations import quaternion_from_euler
 from visualization_msgs.msg import Marker, MarkerArray
 from box.msg import *
 from box.srv import *
@@ -268,8 +263,7 @@ while True:
 
 		# Waiting for all robots to complete their actions
 		for i in range(num_robots):
-			while os.path.isfile(goal_pos_file[i]):
-				pass
+			FileComm.hang_while_exists(goal_pos_file[i]):
 
 	rospy.loginfo("commander: Plan Executed Successfully.")
 
