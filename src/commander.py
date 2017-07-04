@@ -128,8 +128,9 @@ grid_topic				= rospy.get_param('/grid_topic')
 grid_marker_topic		= rospy.get_param('/grid_marker_topic')
 ini_robot_markers_topic	= rospy.get_param('/grid_markerini_robot_markers_topic')
 ini_boxes_markers_topic	= rospy.get_param('/grid_markerini_boxes_markers_topic')
-end_boxes_markers_topic	= rospy.get_param('/grid_markerend_boxes_markers_topic')
+cur_robot_markers_topic	= rospy.get_param('/grid_markercur_robot_markers_topic')
 cur_boxes_markers_topic	= rospy.get_param('/grid_markercur_boxes_markers_topic')
+end_boxes_markers_topic	= rospy.get_param('/grid_markerend_boxes_markers_topic')
 goal_pos_file_format	= rospy.get_param('/goal_pos_file_format')
 current_pos_file_format	= rospy.get_param('/current_pos_file_format')
 shared_dir				= rospy.get_param('/shared_dir')
@@ -145,8 +146,9 @@ sub_grid			= rospy.Subscriber(grid_topic, OccupancyGrid, get_grid)
 # Marker Array Publishers
 ini_robot_markers	= rospy.Publisher(ini_robot_markers_topic, MarkerArray, queue_size=10,latch=True)
 ini_boxes_markers	= rospy.Publisher(ini_boxes_markers_topic, MarkerArray, queue_size=10,latch=True)
-end_boxes_markers	= rospy.Publisher(end_boxes_markers_topic, MarkerArray, queue_size=10,latch=True)
+cur_robot_markers	= rospy.Publisher(cur_robot_markers_topic, MarkerArray, queue_size=10,latch=True)
 cur_boxes_markers	= rospy.Publisher(cur_boxes_markers_topic, MarkerArray, queue_size=10,latch=True)
+end_boxes_markers	= rospy.Publisher(end_boxes_markers_topic, MarkerArray, queue_size=10,latch=True)
 
 # Wait for map
 rospy.loginfo("commander: Waiting for map...")
@@ -246,8 +248,16 @@ while True:
 	for step in plan.steps:
 
 		# Current/Goal Robot and Box Positions
-		boxes_indexes	= list(grid_to_index(step.box_pos))
 		robot_indexes	= list(grid_to_index(step.robot_pos))
+		boxes_indexes	= list(grid_to_index(step.box_pos))
+
+		# Publishing current robot positions
+		cur_robot_marker_array = MarkerArray()
+		for i,r in enumerate(robot_indexes):
+			text = "R%d"%i
+			color=ColorRGBA(0,0.8,1,1)
+			cur_robot_marker_array.markers.append(index_to_marker(r,text=text,color=color,id=i))	
+		cur_robot_markers.publish(cur_robot_marker_array)
 
 		# Publishing current box positions
 		cur_boxes_marker_array = MarkerArray()

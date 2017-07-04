@@ -11,8 +11,9 @@
 	<param name="grid_marker_topic"						type="string"	value="/box/grid_marker" />
 	<param name="grid_markerini_robot_markers_topic"	type="string"	value="/box/ini_robot_markers" />
 	<param name="grid_markerini_boxes_markers_topic"	type="string"	value="/box/ini_boxes_markers" />
-	<param name="grid_markerend_boxes_markers_topic"	type="string"	value="/box/end_boxes_markers" />
+	<param name="grid_markercur_robot_markers_topic"	type="string"	value="/box/cur_robot_markers" />
 	<param name="grid_markercur_boxes_markers_topic"	type="string"	value="/box/cur_boxes_markers" />
+	<param name="grid_markerend_boxes_markers_topic"	type="string"	value="/box/end_boxes_markers" />
 	<param name="shared_dir"							type="string"	value="$(arg shared_dir)" />
 	<param name="goal_pos_file_format"					type="string"	value="%s/goal_pos_%03d" />
 	<param name="current_pos_file_format"				type="string"	value="%s/current_pos_%03d" />
@@ -41,7 +42,7 @@
 	</node>
 
 	<!-- Rviz -->
-	<node name="rviz" pkg="rviz"		type="rviz" args="-d $(find box)/rviz/manager.rviz"/>
+	<node name="rviz" pkg="rviz"		type="rviz" args="-d $(find box)/rviz/commander.rviz"/>
 
 </launch>
 
