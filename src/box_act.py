@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-import os
-import csv
 import math
 import rospy
 import actionlib
@@ -55,6 +53,10 @@ shared_dir				= rospy.get_param('/shared_dir')
 goal_pos_file			= goal_pos_file_format % (shared_dir,robot_id)
 current_pos_file		= current_pos_file_format % (shared_dir,robot_id)
 
+# Cleaning files from previous execution
+remove_file(goal_pos_file)
+remove_file(current_pos_file)
+
 # Wait for robot pos
 robot_pos			= None
 sub_robot_pos		= rospy.Subscriber(robot_pos_topic, PoseWithCovarianceStamped, get_robot_pos)
@@ -82,7 +84,7 @@ while True:
 	rospy.loginfo("box_act: Starting action execution...")
 	send_subgoal(previous_goal, current_goal)
 	previous_goal = current_goal
-	os.remove(goal_pos_file)
+	remove_file(goal_pos_file)
 	rospy.loginfo("box_act: Action Executed Successfully.")
 
 	# Current robot position
