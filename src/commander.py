@@ -263,7 +263,7 @@ while True:
 
 		# Waiting for all robots to complete their actions
 		for i in range(num_robots):
-			FileComm.hang_while_exists(goal_pos_file[i]):
+			FileComm.hang_while_exists(goal_pos_file[i])
 
 	rospy.loginfo("commander: Plan Executed Successfully.")
 
