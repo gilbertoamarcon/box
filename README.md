@@ -25,7 +25,7 @@ On the "Robot" machine:
 
 ```roslaunch turtlebot_gazebo amcl_demo.launch map_file:=$(rospack find box)/maps/maze_00.yaml```
 
-```rosrun box execution_supervisor.sh gil@ovunc 0```
+```rosrun box execution_supervisor.sh gil@deskhp 0```
 
 
 On the "Planner" machine:

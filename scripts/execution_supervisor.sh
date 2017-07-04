@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## Usage: 
-# ./execution_supervisor.sh gil@ovunc 0
+# ./execution_supervisor.sh gil@deskhp 0
 
 # Getting command line args
 shared_dir=$HOME/Public
