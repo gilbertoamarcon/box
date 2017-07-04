@@ -180,14 +180,24 @@ while True:
 		ini_robot.append(map_to_index(FileComm.read_pos(current_pos_file[i])))
 
 	# Current Box Positions
-	print "Enter the current box position indexes: ",
-	s = raw_input()
-	ini_boxes = map(int, s.split())
+	while True:
+		print "Enter the current box position indexes: ",
+		try:
+			s = raw_input()
+			ini_boxes = map(int, s.split())
+			break
+		except:
+			print "Bad input, please provide space-separated integers."
 
 	# Goal Box Positions
-	print "Enter the goal box position indexes: ",
-	s = raw_input()
-	end_boxes = map(int, s.split())
+	while True:
+		print "Enter the goal box position indexes: ",
+		try:
+			s = raw_input()
+			end_boxes = map(int, s.split())
+			break
+		except:
+			print "Bad input, please provide space-separated integers."
 
 	# ============================================
 	# Publishing Problem Representation Markers
