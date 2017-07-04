@@ -4,10 +4,6 @@ import csv
 import rospy
 from geometry_msgs.msg import Point
 
-def remove_file(filename):
-	while os.path.isfile(filename):
-		os.remove(filename)
-
 def write_pos(filename,pos):
 	with open(filename, 'w') as f:
 		f.write('%f %f %f\n'%(pos.x,pos.y,pos.z))
