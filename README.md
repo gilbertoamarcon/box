@@ -19,22 +19,16 @@ Run catkin_make at the workspace root.
 
 Usage: 
 
-
-Run the Turtlebot in simulation:
+On the "Robot" machine:
 
 ```roslaunch turtlebot_gazebo turtlebot_world.launch world_file:=$(rospack find box)/worlds/maze_00.world```
 
 ```roslaunch turtlebot_gazebo amcl_demo.launch map_file:=$(rospack find box)/maps/maze_00.yaml```
 
+```rosrun box execution_supervisor.sh gil@ovunc 0```
 
 
-Choose the planner approach:
+On the "Planner" machine:
 
-Optimal Planner: 
-
-```roslaunch box box_plan_optimal.launch```
-
-External Planner: 
-
-```roslaunch box box_plan.launch```
+```rosrun box execution_commander.sh 1 "$(rospack find box)/maps/maze_00.yaml"```
 
