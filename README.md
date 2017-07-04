@@ -32,3 +32,5 @@ On the "Planner" machine:
 
 ```rosrun box execution_commander.sh 1 "$(rospack find box)/maps/maze_00.yaml"```
 
+967 1144 1043
+
