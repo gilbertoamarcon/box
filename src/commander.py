@@ -247,6 +247,10 @@ while True:
 
 	plan = solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid)
 
+	if len(plan.steps) == 0:
+		rospy.loginfo("commander: Planning Failed.")
+		continue
+
 
 	# ============================================
 	# Execution
@@ -255,7 +259,9 @@ while True:
 	rospy.loginfo("commander: Plan execution...")
 
 	# Execution loop
-	for step in plan.steps:
+	for step_num, step in enumerate(plan.steps):
+	
+		rospy.loginfo("commander: Executing step %03d..." % step_num)
 
 		# Current/Goal Robot and Box Positions
 		robot_indexes	= list(grid_to_index(step.robot_pos))

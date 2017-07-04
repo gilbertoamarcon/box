@@ -17,20 +17,39 @@ Basic Install: cd into models and:
 Run catkin_make at the workspace root.
 
 
-Usage: 
+Example Usage: 
 
-On the "Robot" machine:
+On the "Robot 0" machine:
+
+```export ROBOT_INITIAL_POSE="-y 0.5"```
 
 ```roslaunch turtlebot_gazebo turtlebot_world.launch world_file:=$(rospack find box)/worlds/maze_01.world```
 
-```roslaunch turtlebot_gazebo amcl_demo.launch map_file:=$(rospack find box)/maps/maze_00.yaml```
+```roslaunch turtlebot_gazebo amcl_demo.launch map_file:=$(rospack find box)/maps/maze_01.yaml initial_pose_y:=0.5```
 
 ```rosrun box execution_supervisor.sh gil@deskhp 0```
 
 
+On the "Robot 1" machine:
+
+```export ROBOT_INITIAL_POSE="-y -0.5"```
+
+```roslaunch turtlebot_gazebo turtlebot_world.launch world_file:=$(rospack find box)/worlds/maze_01.world```
+
+```roslaunch turtlebot_gazebo amcl_demo.launch map_file:=$(rospack find box)/maps/maze_01.yaml initial_pose_y:=-0.5```
+
+```rosrun box execution_supervisor.sh gil@deskhp 1```
+
+
 On the "Planner" machine:
 
-```rosrun box execution_commander.sh 1 "$(rospack find box)/maps/maze_00.yaml"```
+```rosrun box execution_commander.sh 2 "$(rospack find box)/maps/maze_01.yaml"```
 
-967 1144 1043
+Example box start positions:
+
+```1183 1047 876```
+
+Example box end positions:
+
+```1225 1219 707```
 

@@ -99,7 +99,7 @@
 			<include>
 				<uri>model://small_box</uri>
 			</include>
-			<pose>-0.17 0.71 0 0 0 0</pose>
+			<pose>-2.498 -0.628 0 0 0 0</pose>
 		</model>
 
 		<model name='small_box_B'>
@@ -113,91 +113,140 @@
 			<include>
 				<uri>model://small_box</uri>
 			</include>
-			<pose>1.615 2.114 0 0 0 0</pose>
+			<pose>0.244 2.571 0 0 0 0</pose>
 		</model>
 
 		<model name='big_box_00'>
 			<include>
 				<uri>model://big_box</uri>
 			</include>
-			<pose>1.144 0.686 0.229 0 0 0</pose>
+			<pose>1.5 1.5 0.229 0 0 0</pose>
 		</model>
 
 		<model name='big_box_01'>
 			<include>
 				<uri>model://big_box</uri>
 			</include>
-			<pose>1.144 0.229 0.229 0 0 0</pose>
+			<pose>1.5 1.0 0.229 0 0 0</pose>
 		</model>
 
 		<model name='big_box_02'>
 			<include>
 				<uri>model://big_box</uri>
 			</include>
-			<pose>1.144 -0.229 0.229 0 0 0</pose>
+			<pose>1.5 0.5 0.229 0 0 0</pose>
 		</model>
 
 		<model name='big_box_03'>
 			<include>
 				<uri>model://big_box</uri>
 			</include>
-			<pose>1.144 -0.686 0.229 0 0 0</pose>
+			<pose>1.5 0.0 0.229 0 0 0</pose>
 		</model>
 
 		<model name='big_box_04'>
 			<include>
 				<uri>model://big_box</uri>
 			</include>
-			<pose>0.686 -0.686 0.229 0 0 0</pose>
+			<pose>1.5 -0.5 0.229 0 0 0</pose>
 		</model>
 
 		<model name='big_box_05'>
 			<include>
 				<uri>model://big_box</uri>
 			</include>
-			<pose>0.229 -0.686 0.229 0 0 0</pose>
+			<pose>1.5 -1.0 0.229 0 0 0</pose>
 		</model>
 
 		<model name='big_box_06'>
 			<include>
 				<uri>model://big_box</uri>
 			</include>
-			<pose>-0.229 -0.686 0.229 0 0 0</pose>
+			<pose>1.5 -1.5 0.229 0 0 0</pose>
 		</model>
 
 		<model name='big_box_07'>
 			<include>
 				<uri>model://big_box</uri>
 			</include>
-			<pose>-0.686 -0.686 0.229 0 0 0</pose>
+			<pose>1.0 -1.5 0.229 0 0 0</pose>
 		</model>
 
 		<model name='big_box_08'>
 			<include>
 				<uri>model://big_box</uri>
 			</include>
-			<pose>-1.144 -0.686 0.229 0 0 0</pose>
+			<pose>0.5 -1.5 0.229 0 0 0</pose>
 		</model>
 
 		<model name='big_box_09'>
 			<include>
 				<uri>model://big_box</uri>
 			</include>
-			<pose>-1.144 -0.229 0.229 0 0 0</pose>
+			<pose>0.0 -1.5 0.229 0 0 0</pose>
 		</model>
 
 		<model name='big_box_10'>
 			<include>
 				<uri>model://big_box</uri>
 			</include>
-			<pose>-1.144 0.229 0.229 0 0 0</pose>
+			<pose>-0.5 -1.5 0.229 0 0 0</pose>
 		</model>
 
 		<model name='big_box_11'>
 			<include>
 				<uri>model://big_box</uri>
 			</include>
-			<pose>-1.144 0.686 0.229 0 0 0</pose>
+			<pose>-1.0 -1.5 0.229 0 0 0</pose>
+		</model>
+
+		<model name='big_box_12'>
+			<include>
+				<uri>model://big_box</uri>
+			</include>
+			<pose>-1.5 -1.5 0.229 0 0 0</pose>
+		</model>
+
+		<model name='big_box_13'>
+			<include>
+				<uri>model://big_box</uri>
+			</include>
+			<pose>1.0 1.5 0.229 0 0 0</pose>
+		</model>
+
+		<model name='big_box_14'>
+			<include>
+				<uri>model://big_box</uri>
+			</include>
+			<pose>0.5 1.5 0.229 0 0 0</pose>
+		</model>
+
+		<model name='big_box_15'>
+			<include>
+				<uri>model://big_box</uri>
+			</include>
+			<pose>0.0 1.5 0.229 0 0 0</pose>
+		</model>
+
+		<model name='big_box_16'>
+			<include>
+				<uri>model://big_box</uri>
+			</include>
+			<pose>-0.5 1.5 0.229 0 0 0</pose>
+		</model>
+
+		<model name='big_box_17'>
+			<include>
+				<uri>model://big_box</uri>
+			</include>
+			<pose>-1.0 1.5 0.229 0 0 0</pose>
+		</model>
+
+		<model name='big_box_18'>
+			<include>
+				<uri>model://big_box</uri>
+			</include>
+			<pose>-1.5 1.5 0.229 0 0 0</pose>
 		</model>
 
 	</world>
