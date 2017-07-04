@@ -39,12 +39,12 @@ def send_subgoal(prev_xy, next_xy):
 # Main
 # ============================================
 
-rospy.init_node('box_act')
+rospy.init_node('supervisor')
 
 # Getting parameters
-robot_id				= rospy.get_param('/box_act/robot_id')
-robot_pos_topic			= rospy.get_param('/box_act/robot_pos_topic')
-move_base_topic			= rospy.get_param('/box_act/move_base_topic')
+robot_id				= rospy.get_param('/supervisor/robot_id')
+robot_pos_topic			= rospy.get_param('/supervisor/robot_pos_topic')
+move_base_topic			= rospy.get_param('/supervisor/move_base_topic')
 goal_pos_file_format	= rospy.get_param('/goal_pos_file_format')
 current_pos_file_format	= rospy.get_param('/current_pos_file_format')
 shared_dir				= rospy.get_param('/shared_dir')
@@ -60,7 +60,7 @@ remove_file(current_pos_file)
 # Wait for robot pos
 robot_pos			= None
 sub_robot_pos		= rospy.Subscriber(robot_pos_topic, PoseWithCovarianceStamped, get_robot_pos)
-rospy.loginfo("box_act: Waiting for robot position..")
+rospy.loginfo("supervisor: Waiting for robot position...")
 while robot_pos is None:
 	pass
 
@@ -74,22 +74,20 @@ client.wait_for_server()
 # Execution loop
 previous_goal	= Point(0,0,0)
 current_goal	= Point(0,0,0)
-action_counter = 0
 while True:
 
 	# Reading Action
-	# rospy.loginfo("box_act: Waiting for action..")
+	rospy.loginfo("supervisor: Waiting for action command...")
 	current_goal = read_pos(goal_pos_file)
 
 	# Action Execution
-	# rospy.loginfo("box_act: Starting action execution...")
+	rospy.loginfo("supervisor: Executing action...")
 	send_subgoal(previous_goal, current_goal)
 	previous_goal = current_goal
 	remove_file(goal_pos_file)
-	rospy.loginfo("box_act: Action %d Executed Successfully."%action_counter)
-	action_counter += 1
+	rospy.loginfo("supervisor: Action %d Executed Successfully.")
 
 	# Current robot position
-	# write_pos(current_pos_file,robot_pos)
+	write_pos(current_pos_file,robot_pos)
 
 rospy.spin()

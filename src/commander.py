@@ -89,7 +89,7 @@ def request_plan(grid_map,problem):
 		resp1 = box_plan(grid_map,problem)
 		return resp1.plan
 	except rospy.ServiceException, e:
-		rospy.loginfo("box_manage: Service call failed: %s"%e)
+		rospy.loginfo("commander: Service call failed: %s"%e)
 
 def solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid):
 
@@ -115,7 +115,7 @@ def solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid):
 		else:
 			grid_map.data.append(int(1))
 
-	rospy.loginfo("box_manage: Waiting for plan...")
+	rospy.loginfo("commander: Waiting for plan...")
 	plan = request_plan(grid_map,problem)
 	return plan
 
@@ -124,10 +124,10 @@ def solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid):
 # Main
 # ============================================
 
-rospy.init_node('box_manage')
+rospy.init_node('commander')
 
 # Getting parameters
-num_robots				= rospy.get_param('/box_manage/num_robots')
+num_robots				= rospy.get_param('/commander/num_robots')
 box_plan_service		= rospy.get_param('/box_plan_service')
 grid_topic				= rospy.get_param('/grid_topic')
 grid_marker_topic		= rospy.get_param('/grid_marker_topic')
@@ -154,12 +154,12 @@ end_boxes_markers	= rospy.Publisher(end_boxes_markers_topic, MarkerArray, queue_
 cur_boxes_markers	= rospy.Publisher(cur_boxes_markers_topic, MarkerArray, queue_size=10,latch=True)
 
 # Wait for map
-rospy.loginfo("box_manage: Waiting for map...")
+rospy.loginfo("commander: Waiting for map...")
 while grid is None:
 	pass
 
 # Wait for markers
-rospy.loginfo("box_manage: Waiting for markers...")
+rospy.loginfo("commander: Waiting for markers...")
 while pos_index_markers is None:
 	pass
 
@@ -177,7 +177,7 @@ for i in range(num_robots):
 while True:
 
 	# Reading current robot positions
-	rospy.loginfo("box_manage: Waiting for robot positions...")
+	rospy.loginfo("commander: Waiting for robot positions...")
 	ini_robot = []
 	for i in range(num_robots):
 		ini_robot.append(map_to_index(read_pos(current_pos_file[i])))
@@ -245,7 +245,7 @@ while True:
 	# Execution
 	# ============================================
 
-	rospy.loginfo("box_manage: Plan execution...")
+	rospy.loginfo("commander: Plan execution...")
 
 	# Execution loop
 	for step in plan.steps:
@@ -262,7 +262,7 @@ while True:
 			cur_boxes_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))	
 		cur_boxes_markers.publish(cur_boxes_marker_array)
 
-		# Witting goal robot positions
+		# Writing goal robot positions
 		for i in range(num_robots):
 			write_pos(goal_pos_file[i],index_to_map(robot_indexes[i]))
 
@@ -271,6 +271,6 @@ while True:
 			while os.path.isfile(goal_pos_file[i]):
 				pass
 
-	rospy.loginfo("box_manage: Plan Executed Successfully.")
+	rospy.loginfo("commander: Plan Executed Successfully.")
 
 rospy.spin()

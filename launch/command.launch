@@ -2,10 +2,10 @@
 
 	<!-- Command line arguments -->
 	<arg name="map_file" />
-	<arg name="arg_num_robots" />
-	<arg name="arg_shared_dir" />
+	<arg name="num_robots" />
+	<arg name="shared_dir" />
 
-	<!-- Topic Names -->
+	<!-- Service/Topic/File Names -->
 	<param name="box_plan_service"						type="string"	value="box_plan" />
 	<param name="grid_topic"							type="string"	value="/box/grid" />
 	<param name="grid_marker_topic"						type="string"	value="/box/grid_marker" />
@@ -13,7 +13,7 @@
 	<param name="grid_markerini_boxes_markers_topic"	type="string"	value="/box/ini_boxes_markers" />
 	<param name="grid_markerend_boxes_markers_topic"	type="string"	value="/box/end_boxes_markers" />
 	<param name="grid_markercur_boxes_markers_topic"	type="string"	value="/box/cur_boxes_markers" />
-	<param name="shared_dir"							type="string"	value="$(arg arg_shared_dir)" />
+	<param name="shared_dir"							type="string"	value="$(arg shared_dir)" />
 	<param name="goal_pos_file_format"					type="string"	value="%s/goal_pos_%03d" />
 	<param name="current_pos_file_format"				type="string"	value="%s/current_pos_%03d" />
 
@@ -35,9 +35,9 @@
 		<param name="solution"			type="string"	value="$(find box)/temp/solution" />
 	</node>
 
-	<!-- Plan Execution -->
-	<node pkg="box" name="box_manage"	type="box_manage.py" respawn="false" output="screen">
-		<param name="num_robots"			type="int"	value="$(arg arg_num_robots)" />
+	<!-- Execution Commander -->
+	<node pkg="box" name="commander"	type="commander.py" respawn="false" output="screen">
+		<param name="num_robots"			type="int"	value="$(arg num_robots)" />
 	</node>
 
 	<!-- Rviz -->
