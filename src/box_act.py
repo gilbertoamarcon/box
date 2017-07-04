@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-import os
-import csv
 import math
 import rospy
 import actionlib
@@ -55,12 +53,19 @@ shared_dir				= rospy.get_param('/shared_dir')
 goal_pos_file			= goal_pos_file_format % (shared_dir,robot_id)
 current_pos_file		= current_pos_file_format % (shared_dir,robot_id)
 
+# Cleaning files from previous execution
+remove_file(goal_pos_file)
+remove_file(current_pos_file)
+
 # Wait for robot pos
 robot_pos			= None
 sub_robot_pos		= rospy.Subscriber(robot_pos_topic, PoseWithCovarianceStamped, get_robot_pos)
 rospy.loginfo("box_act: Waiting for robot position..")
 while robot_pos is None:
 	pass
+
+# Current robot position
+write_pos(current_pos_file,robot_pos)
 
 # Action client setup
 client = actionlib.SimpleActionClient(move_base_topic, MoveBaseAction)
@@ -69,23 +74,22 @@ client.wait_for_server()
 # Execution loop
 previous_goal	= Point(0,0,0)
 current_goal	= Point(0,0,0)
+action_counter = 0
 while True:
 
-	# Current robot position
-	write_pos(current_pos_file,robot_pos)
-
 	# Reading Action
-	rospy.loginfo("box_act: Waiting for action..")
+	# rospy.loginfo("box_act: Waiting for action..")
 	current_goal = read_pos(goal_pos_file)
 
 	# Action Execution
-	rospy.loginfo("box_act: Starting action execution...")
+	# rospy.loginfo("box_act: Starting action execution...")
 	send_subgoal(previous_goal, current_goal)
 	previous_goal = current_goal
-	os.remove(goal_pos_file)
-	rospy.loginfo("box_act: Action Executed Successfully.")
+	remove_file(goal_pos_file)
+	rospy.loginfo("box_act: Action %d Executed Successfully."%action_counter)
+	action_counter += 1
 
 	# Current robot position
-	write_pos(current_pos_file,robot_pos)
+	# write_pos(current_pos_file,robot_pos)
 
 rospy.spin()

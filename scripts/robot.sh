@@ -8,9 +8,6 @@ arg_shared_dir=$HOME/Public
 remote_server=$1
 arg_robot_id=$2
 
-# Cleaning shared folder
-rm $arg_shared_dir/* > /dev/null 2>&1
-
 # Mounting shared folder
 sshfs $remote_server:$arg_shared_dir $arg_shared_dir
 

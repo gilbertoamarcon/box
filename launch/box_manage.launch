@@ -1,6 +1,7 @@
 <launch>
 
 	<!-- Command line arguments -->
+	<arg name="map_file" />
 	<arg name="arg_num_robots" />
 	<arg name="arg_shared_dir" />
 
@@ -15,6 +16,9 @@
 	<param name="shared_dir"							type="string"	value="$(arg arg_shared_dir)" />
 	<param name="goal_pos_file_format"					type="string"	value="%s/goal_pos_%03d" />
 	<param name="current_pos_file_format"				type="string"	value="%s/current_pos_%03d" />
+
+	<!-- Map server -->
+	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
 	<!-- Grid Mapper -->
 	<node pkg="box" name="grid_mapper"	type="grid_mapper.py" respawn="false" output="screen">
@@ -37,7 +41,7 @@
 	</node>
 
 	<!-- Rviz -->
-	<node name="rviz" pkg="rviz"		type="rviz" args="-d $(find box)/rviz/box.rviz"/>
+	<node name="rviz" pkg="rviz"		type="rviz" args="-d $(find box)/rviz/manager.rviz"/>
 
 </launch>
 
