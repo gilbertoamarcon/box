@@ -27,7 +27,7 @@ On the "Robot 0" machine:
 
 ```roslaunch turtlebot_gazebo amcl_demo.launch map_file:=$(rospack find box)/maps/maze_01.yaml initial_pose_y:=0.5```
 
-```rosrun box execution_supervisor.sh gil@deskhp 0```
+```rosrun box execution_supervisor.sh gil@deskhp:Public 0```
 
 
 On the "Robot 1" machine:
@@ -38,7 +38,7 @@ On the "Robot 1" machine:
 
 ```roslaunch turtlebot_gazebo amcl_demo.launch map_file:=$(rospack find box)/maps/maze_01.yaml initial_pose_y:=-0.5```
 
-```rosrun box execution_supervisor.sh gil@deskhp 1```
+```rosrun box execution_supervisor.sh gil@deskhp:Public 1```
 
 
 On the "Planner" machine:
@@ -62,7 +62,7 @@ On the "Robot 0" machine:
 
 ```roslaunch turtlebot_navigation amcl_demo.launch map_file:=$(rospack find box)/maps/printer_000.yaml```
 
-```rosrun box execution_supervisor.sh gil@deskhp 0```
+```rosrun box execution_supervisor.sh gil@deskhp:Public 0```
 
 
 On the "Robot 1" machine:
@@ -71,7 +71,7 @@ On the "Robot 1" machine:
 
 ```roslaunch turtlebot_navigation amcl_demo.launch map_file:=$(rospack find box)/maps/printer_000.yaml```
 
-```rosrun box execution_supervisor.sh gil@deskhp 1```
+```rosrun box execution_supervisor.sh gil@deskhp:Public 1```
 
 
 On the "Planner" machine:
