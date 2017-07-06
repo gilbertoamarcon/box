@@ -28,6 +28,18 @@ pid="$! $pid"
 
 sleep 3s
 
+echo "Launching rviz..."
+roslaunch pioneer_test pioneer_description.launch &
+rosrun rviz rviz -d "$(rospack find box)/rviz/pioneer.rviz" &
+pid="$! $pid"
+
+sleep 1s
+
+#echo "Launching estop..."
+#rqt --standalone rqt_estop
+
+sleep 1s
+
 trap "echo Killing all processes.; kill -2 $pid; exit" SIGINT SIGTERM
 
 sleep 24h
