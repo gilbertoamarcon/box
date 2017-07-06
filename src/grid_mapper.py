@@ -52,10 +52,10 @@ def downsample(map):
 			marker.scale.x = box_size/3
 			marker.scale.y = box_size/3
 			marker.scale.z = box_size/3
-			marker.color.a = 0.5
-			marker.color.r = 0.5
-			marker.color.g = 0.5
-			marker.color.b = 0.5
+			marker.color.a = 0.25
+			marker.color.r = 0.50
+			marker.color.g = 0.50
+			marker.color.b = 0.50
 			marker.pose.orientation.w = 1.0
 			marker.pose.position.x = j*box_size - x_offset + box_size/4 + downsampling_offset*box_size
 			marker.pose.position.y = i*box_size - y_offset + box_size/4 + downsampling_offset*box_size

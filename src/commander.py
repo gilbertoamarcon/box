@@ -26,12 +26,12 @@ def grid_to_index(points):
 		yield int(p.x*grid.info.width + p.y)
 
 # Grid index to marker
-def index_to_marker(index,text=None,color=None,id=None):
+def index_to_marker(index,label=None,color=None,id=None):
 	for marker in pos_index_markers.markers:
 		if marker.id == index:
 			m = copy.deepcopy(marker)
-			if not text is None:
-				m.text = text
+			if not label is None:
+				m.text = label
 			if not color is None:
 				m.color = color
 			if not id is None:
@@ -116,6 +116,19 @@ def solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid):
 
 
 # ============================================
+# Utils
+# ============================================
+
+def publish_markers(marker_pub, index_list, label_format="%d", label_offset=0, color=ColorRGBA(1,1,1,1)):
+	marker_array = MarkerArray()
+	for id,index in enumerate(index_list):
+		label = label_format%(id+label_offset)
+		marker_array.markers.append(index_to_marker(index,label=label,color=color,id=id))
+	marker_pub.publish(marker_array)
+
+
+
+# ============================================
 # Main
 # ============================================
 
@@ -160,10 +173,6 @@ rospy.loginfo("commander: Waiting for markers...")
 while pos_index_markers is None:
 	pass
 
-# ============================================
-# Loading Robot Positions
-# ============================================
-
 # File names
 goal_pos_file = {}
 current_pos_file = {}
@@ -171,15 +180,16 @@ for i in range(num_robots):
 	goal_pos_file[i]		= goal_pos_file_format % (shared_dir,i)
 	current_pos_file[i]		= current_pos_file_format % (shared_dir,i)
 
+# Initial robot positions
+rospy.loginfo("commander: Waiting for robot positions...")
+ini_robot = []
+for i in range(num_robots):
+	ini_robot.append(map_to_index(FileComm.read_pos(current_pos_file[i])))
+publish_markers(ini_robot_markers, ini_robot, label_format="R%d", color=ColorRGBA(0,0,1,1))
+
 while True:
 
-	# Reading current robot positions
-	rospy.loginfo("commander: Waiting for robot positions...")
-	ini_robot = []
-	for i in range(num_robots):
-		ini_robot.append(map_to_index(FileComm.read_pos(current_pos_file[i])))
-
-	# Current Box Positions
+	# Initial Box Positions
 	while True:
 		print "Enter the current box position indexes: ",
 		try:
@@ -188,6 +198,7 @@ while True:
 			break
 		except:
 			print "Bad input, please provide space-separated integers."
+	publish_markers(ini_boxes_markers, ini_boxes, label_format="%c", label_offset=65, color=ColorRGBA(1,0,0,1))
 
 	# Goal Box Positions
 	while True:
@@ -198,52 +209,15 @@ while True:
 			break
 		except:
 			print "Bad input, please provide space-separated integers."
+	publish_markers(end_boxes_markers, end_boxes, label_format="%c", label_offset=97, color=ColorRGBA(1,0,0,1))
 
 	# ============================================
-	# Publishing Problem Representation Markers
-	# ============================================
-
-	# Marker Arrays
-	ini_robot_marker_array	= MarkerArray()
-	ini_boxes_marker_array	= MarkerArray()
-	end_boxes_marker_array	= MarkerArray()
-
-	# Init robot Marker Arrays
-	for i,b in enumerate(ini_robot):
-		text = "R%d"%i
-		color=ColorRGBA(0,0,1,1)
-		ini_robot_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))
-
-	# Init Boxes Marker Arrays
-	for i,b in enumerate(ini_boxes):
-		text = "%c"%(i+65)
-		color=ColorRGBA(1,0,0,1)
-		ini_boxes_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))
-
-	# Final robot Marker Arrays
-	for i,b in enumerate(end_boxes):
-		text = "%c"%(i+97)
-		color=ColorRGBA(1,0,0,1)
-		end_boxes_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))
-
-	# Publishing Marker Arrays
-	ini_robot_markers.publish(ini_robot_marker_array)
-	ini_boxes_markers.publish(ini_boxes_marker_array)
-	end_boxes_markers.publish(end_boxes_marker_array)
-
-
-	# ============================================
-	# Indexes to Grid Coordinates
+	# Planning
 	# ============================================
 
 	ini_robot_grid = list(index_to_grid(ini_robot))
 	ini_boxes_grid = list(index_to_grid(ini_boxes))
 	end_boxes_grid = list(index_to_grid(end_boxes))
-
-
-	# ============================================
-	# Planning
-	# ============================================
 
 	plan = solve_problem(ini_robot_grid, ini_boxes_grid, end_boxes_grid)
 
@@ -263,25 +237,13 @@ while True:
 	
 		rospy.loginfo("commander: Executing step %03d..." % step_num)
 
-		# Current/Goal Robot and Box Positions
+		# Goal Robot and Box Positions
 		robot_indexes	= list(grid_to_index(step.robot_pos))
 		boxes_indexes	= list(grid_to_index(step.box_pos))
 
-		# Publishing current robot positions
-		cur_robot_marker_array = MarkerArray()
-		for i,r in enumerate(robot_indexes):
-			text = "R%d"%i
-			color=ColorRGBA(0,0.8,1,1)
-			cur_robot_marker_array.markers.append(index_to_marker(r,text=text,color=color,id=i))	
-		cur_robot_markers.publish(cur_robot_marker_array)
-
-		# Publishing current box positions
-		cur_boxes_marker_array = MarkerArray()
-		for i,b in enumerate(boxes_indexes):
-			text = "%c"%(i+65)
-			color=ColorRGBA(1,0.65,0,1)
-			cur_boxes_marker_array.markers.append(index_to_marker(b,text=text,color=color,id=i))	
-		cur_boxes_markers.publish(cur_boxes_marker_array)
+		# Publishing current goal positions
+		publish_markers(cur_robot_markers, robot_indexes, label_format="r%d", color=ColorRGBA(0,0.8,1,1))
+		publish_markers(cur_boxes_markers, boxes_indexes, label_format="%c", label_offset=97, color=ColorRGBA(1,0.7,0,1))
 
 		# Writing goal robot positions
 		for i in range(num_robots):
@@ -290,6 +252,12 @@ while True:
 		# Waiting for all robots to complete their actions
 		for i in range(num_robots):
 			FileComm.hang_while_exists(goal_pos_file[i])
+
+		# Current robot positions
+		ini_robot = []
+		for i in range(num_robots):
+			ini_robot.append(map_to_index(FileComm.read_pos(current_pos_file[i])))
+		publish_markers(ini_robot_markers, ini_robot, label_format="R%d", color=ColorRGBA(0,0,1,1))
 
 	rospy.loginfo("commander: Plan Executed Successfully.")
 
