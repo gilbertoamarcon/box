@@ -7,8 +7,8 @@ hdir=$(pwd)
 problem=$1
 solution=$2
 
-cd ~/dev/imapc/logistics/
-./main.sh ~/Documents/prob $problem -push -s ~/Documents/stats.csv -p popf2 -pa
+cd ~/dev/imapc/scripts/
+./synth-and-run.sh ${HOME}/Documents/prob $problem -push -so -cfa 'DynamicProgramming' -s ${HOME}/Documents/stats.csv -p popf2 -pa
 
 cp ~/Documents/prob/solution $solution
 

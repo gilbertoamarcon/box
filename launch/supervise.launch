@@ -10,10 +10,12 @@
 	<param name="current_pos_file_format"				type="string"	value="%s/current_pos_%03d" />
 
 	<!-- Plan Execution -->
-	<node pkg="box" name="supervisor"	type="supervisor.py" respawn="false" output="screen">
-		<param name="robot_id"			type="int"		value="$(arg robot_id)" />
-		<param name="robot_pos_topic"	type="string"	value="/amcl_pose" />
-		<param name="move_base_topic"	type="string"	value="move_base" />
+	<node pkg="box" name="supervisor"		type="supervisor.py" respawn="false" output="screen">
+		<param name="robot_id"				type="int"		value="$(arg robot_id)" />
+		<param name="robot_pos_topic"		type="string"	value="/amcl_pose" />
+		<param name="move_base_topic"		type="string"	value="move_base" />
+		<param name="robot_pos_cov_limit"	value="0.05"/>
+		<param name="localize_rotate_vel"	value="0.5"/>
 	</node>
 
 	<!-- Disabling Turtlebot Safety Controller -->

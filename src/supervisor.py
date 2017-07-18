@@ -2,6 +2,7 @@
 import math
 import rospy
 import actionlib
+from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Point
 from geometry_msgs.msg import PoseWithCovarianceStamped
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
@@ -15,7 +16,9 @@ from FileComm import *
 # Robot Position Callback
 def get_robot_pos(msg):
 	global robot_pos
+	global robot_pos_cov
 	robot_pos = msg.pose.pose.position
+	robot_pos_cov = max(msg.pose.covariance)
 
 # ============================================
 # Action Execution
@@ -45,6 +48,8 @@ rospy.init_node('supervisor')
 robot_id				= rospy.get_param('/supervisor/robot_id')
 robot_pos_topic			= rospy.get_param('/supervisor/robot_pos_topic')
 move_base_topic			= rospy.get_param('/supervisor/move_base_topic')
+robot_pos_cov_limit		= rospy.get_param('/supervisor/robot_pos_cov_limit')
+localize_rotate_vel		= rospy.get_param('/supervisor/localize_rotate_vel')
 goal_pos_file_format	= rospy.get_param('/goal_pos_file_format')
 current_pos_file_format	= rospy.get_param('/current_pos_file_format')
 shared_dir				= rospy.get_param('/shared_dir')
@@ -57,12 +62,17 @@ current_pos_file		= current_pos_file_format % (shared_dir,robot_id)
 FileComm.remove_file(goal_pos_file)
 FileComm.remove_file(current_pos_file)
 
-# Wait for robot pos
+# Wait for acurate robot pos
 robot_pos			= None
+robot_pos_cov		= 1e9
 sub_robot_pos		= rospy.Subscriber(robot_pos_topic, PoseWithCovarianceStamped, get_robot_pos)
-rospy.loginfo("supervisor: Waiting for robot position...")
-while robot_pos is None:
-	pass
+cmd_vel_pub			= rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+rospy.loginfo("supervisor: Waiting for acurate robot position...")
+while robot_pos is None or robot_pos_cov > robot_pos_cov_limit:
+	twist = Twist()
+	twist.angular.z = localize_rotate_vel
+	cmd_vel_pub.publish(twist)
+	rospy.loginfo("supervisor: Current pose covariance: % 12.3f"%robot_pos_cov)
 
 # Current robot position
 FileComm.write_pos(current_pos_file,robot_pos)

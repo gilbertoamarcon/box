@@ -22,7 +22,9 @@ The commander's plan is kept in the commander's machine and only the current ste
 
 ## Basic Install ##
 
-cd into models and:
+Creat models:
+
+```roscd box/models```
 
 ```create-all.sh```
 
@@ -102,19 +104,19 @@ Example box end positions:
 
 ###### On the "Robot 0" machine:
 
-```rosrun pioneer pioneer-navigation.sh $(rospack find pioneer)/maps/printer_000.yaml```
+```roslaunch pioneer localization.launch map_name:=$(rospack find pioneer)/maps/printer_square.yaml``
 
-```rosrun box execution_supervisor.sh gil@deskhp:Public 0```
+```rosrun box execution_supervisor.sh gil@laptop:Public 0```
 
 
 ###### On the "Robot 1" machine:
 
-```rosrun pioneer pioneer-navigation.sh $(rospack find pioneer)/maps/printer_000.yaml```
+```roslaunch pioneer localization.launch map_name:=$(rospack find pioneer)/maps/printer_square.yaml``
 
-```rosrun box execution_supervisor.sh gil@deskhp:Public 1```
+```rosrun box execution_supervisor.sh gil@laptop:Public 1```
 
 
 ###### On the "Planner" machine:
 
-```rosrun box execution_commander.sh 2 "$(rospack find pioneer)/maps/printer_000.yaml"```
+```rosrun box execution_commander.sh 2 "$(rospack find pioneer)/maps/printer_square.yaml"```
 
