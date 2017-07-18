@@ -165,15 +165,13 @@ end_boxes_markers	= rospy.Publisher(end_boxes_markers_topic, MarkerArray, queue_
 
 # Wait for map
 rospy.loginfo("commander: Waiting for map...")
-while grid is None:
-	if rospy.is_shutdown():
-		exit(0)
+while not rospy.is_shutdown() and grid is None:
+	pass
 
 # Wait for markers
 rospy.loginfo("commander: Waiting for markers...")
-while pos_index_markers is None:
-	if rospy.is_shutdown():
-		exit(0)
+while not rospy.is_shutdown() and pos_index_markers is None:
+	pass
 
 # File names
 goal_pos_file = {}
@@ -200,8 +198,6 @@ while not rospy.is_shutdown():
 			break
 		except:
 			print "Bad input, please provide space-separated integers."
-		if rospy.is_shutdown():
-			exit(0)
 	publish_markers(ini_boxes_markers, ini_boxes, label_format="%c", label_offset=65, color=ColorRGBA(1,0,0,1))
 
 	# Goal Box Positions
@@ -213,8 +209,6 @@ while not rospy.is_shutdown():
 			break
 		except:
 			print "Bad input, please provide space-separated integers."
-		if rospy.is_shutdown():
-			exit(0)
 	publish_markers(end_boxes_markers, end_boxes, label_format="%c", label_offset=97, color=ColorRGBA(1,0,0,1))
 
 	# ============================================

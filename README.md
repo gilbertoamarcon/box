@@ -24,9 +24,9 @@ The commander's plan is kept in the commander's machine and only the current ste
 
 Creat models:
 
-```roscd box/models```
+```roscd box/models  ```
 
-```create-all.sh```
+```create-all.sh  ```
 
 Run catkin_make at the workspace root.
 
@@ -35,37 +35,37 @@ Run catkin_make at the workspace root.
 
 ###### On the "Robot 0" machine:
 
-```export ROBOT_INITIAL_POSE="-y 0.5"```
+```export ROBOT_INITIAL_POSE="-y 0.5" ```
 
-```roslaunch turtlebot_gazebo turtlebot_world.launch world_file:=$(rospack find box)/worlds/maze_01.world```
+```roslaunch turtlebot_gazebo turtlebot_world.launch world_file:=$(rospack find box)/worlds/maze_01.world ```
 
-```roslaunch turtlebot_gazebo amcl_demo.launch map_file:=$(rospack find box)/maps/maze_01.yaml initial_pose_y:=0.5```
+```roslaunch turtlebot_gazebo amcl_demo.launch map_file:=$(rospack find box)/maps/maze_01.yaml initial_pose_y:=0.5 ```
 
-```rosrun box execution_supervisor.sh gil@deskhp:Public 0```
+```rosrun box execution_supervisor.sh gil@deskhp:Public 0 ```
 
 
 ###### On the "Robot 1" machine:
 
-```export ROBOT_INITIAL_POSE="-y -0.5"```
+```export ROBOT_INITIAL_POSE="-y -0.5" ```
 
-```roslaunch turtlebot_gazebo turtlebot_world.launch world_file:=$(rospack find box)/worlds/maze_01.world```
+```roslaunch turtlebot_gazebo turtlebot_world.launch world_file:=$(rospack find box)/worlds/maze_01.world ```
 
-```roslaunch turtlebot_gazebo amcl_demo.launch map_file:=$(rospack find box)/maps/maze_01.yaml initial_pose_y:=-0.5```
+```roslaunch turtlebot_gazebo amcl_demo.launch map_file:=$(rospack find box)/maps/maze_01.yaml initial_pose_y:=-0.5 ```
 
-```rosrun box execution_supervisor.sh gil@deskhp:Public 1```
+```rosrun box execution_supervisor.sh gil@deskhp:Public 1 ```
 
 
 ###### On the "Planner" machine:
 
-```rosrun box execution_commander.sh 2 "$(rospack find box)/maps/maze_01.yaml"```
+```rosrun box execution_commander.sh 2 "$(rospack find box)/maps/maze_01.yaml" ```
 
 Example box start positions:
 
-```1183 1047 876```
+```1183 1047 876 ```
 
 Example box end positions:
 
-```1225 1219 707```
+```1225 1219 707 ```
 
 
 
@@ -76,25 +76,25 @@ Example box end positions:
 
 ###### On the "Robot 0" machine:
 
-```roslaunch turtlebot_bringup minimal.launch```
+```roslaunch turtlebot_bringup minimal.launch ```
 
-```roslaunch turtlebot_navigation amcl_demo.launch map_file:=$(rospack find box)/maps/printer_000.yaml```
+```roslaunch turtlebot_navigation amcl_demo.launch map_file:=$(rospack find box)/maps/printer_000.yaml ```
 
-```rosrun box execution_supervisor.sh gil@deskhp:Public 0```
+```rosrun box execution_supervisor.sh gil@deskhp:Public 0 ```
 
 
 ###### On the "Robot 1" machine:
 
-```roslaunch turtlebot_bringup minimal.launch```
+```roslaunch turtlebot_bringup minimal.launch ```
 
-```roslaunch turtlebot_navigation amcl_demo.launch map_file:=$(rospack find box)/maps/printer_000.yaml```
+```roslaunch turtlebot_navigation amcl_demo.launch map_file:=$(rospack find box)/maps/printer_000.yaml ```
 
-```rosrun box execution_supervisor.sh gil@deskhp:Public 1```
+```rosrun box execution_supervisor.sh gil@deskhp:Public 1 ```
 
 
 ###### On the "Planner" machine:
 
-```rosrun box execution_commander.sh 2 "$(rospack find box)/maps/printer_000.yaml"```
+```rosrun box execution_commander.sh 2 "$(rospack find box)/maps/printer_000.yaml" ```
 
 
 
@@ -104,19 +104,19 @@ Example box end positions:
 
 ###### On the "Robot 0" machine:
 
-```roslaunch pioneer localization.launch map_name:=$(rospack find pioneer)/maps/printer_square.yaml``
+```roslaunch pioneer localization.launch map_name:=$(rospack find pioneer)/maps/printer_square.yaml```
 
-```rosrun box execution_supervisor.sh gil@laptop:Public 0```
+```rosrun box execution_supervisor.sh gil@laptop:Public 0 ```
 
 
 ###### On the "Robot 1" machine:
 
-```roslaunch pioneer localization.launch map_name:=$(rospack find pioneer)/maps/printer_square.yaml``
+```roslaunch pioneer localization.launch map_name:=$(rospack find pioneer)/maps/printer_square.yaml```
 
-```rosrun box execution_supervisor.sh gil@laptop:Public 1```
+```rosrun box execution_supervisor.sh gil@laptop:Public 1 ```
 
 
 ###### On the "Planner" machine:
 
-```rosrun box execution_commander.sh 2 "$(rospack find pioneer)/maps/printer_square.yaml"```
+```rosrun box execution_commander.sh 2 "$(rospack find pioneer)/maps/printer_square.yaml" ```
 

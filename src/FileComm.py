@@ -11,7 +11,8 @@ class FileComm(object):
 	@staticmethod
 	def hang_while_exists(filename):
 		while os.path.isfile(filename):
-			pass
+			if rospy.is_shutdown():
+				exit(0)
 
 	# If file exists, remove it
 	@staticmethod
@@ -29,11 +30,14 @@ class FileComm(object):
 	@staticmethod
 	def read_pos(filename):
 		while not os.path.isfile(filename):
-			pass
+			if rospy.is_shutdown():
+				exit(0)
 		buffer_list = []
 		while len(buffer_list) == 0:
 			with open(filename, 'rb') as f:
 				buffer_list = list(csv.reader(f, delimiter=' ', quotechar='"'))
+			if rospy.is_shutdown():
+				exit(0)
 		pos = buffer_list[0]
 		x = float(pos[0])
 		y = float(pos[1])

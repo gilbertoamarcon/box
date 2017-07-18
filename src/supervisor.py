@@ -73,6 +73,8 @@ while robot_pos is None or robot_pos_cov > robot_pos_cov_limit:
 	twist.angular.z = localize_rotate_vel
 	cmd_vel_pub.publish(twist)
 	rospy.loginfo("supervisor: Current pose covariance: % 12.3f"%robot_pos_cov)
+	if rospy.is_shutdown():
+		exit(0)
 
 # Current robot position
 FileComm.write_pos(current_pos_file,robot_pos)
@@ -84,7 +86,7 @@ client.wait_for_server()
 # Execution loop
 previous_goal	= Point(0,0,0)
 current_goal	= Point(0,0,0)
-while True:
+while not rospy.is_shutdown():
 
 	# Reading Action
 	rospy.loginfo("supervisor: Waiting for action command...")
@@ -100,4 +102,3 @@ while True:
 	FileComm.remove_file(goal_pos_file)
 	rospy.loginfo("supervisor: Action Executed Successfully.")
 
-rospy.spin()
