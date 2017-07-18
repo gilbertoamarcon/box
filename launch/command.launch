@@ -7,6 +7,8 @@
 
 	<!-- Service/Topic/File Names -->
 	<param name="box_plan_service"						type="string"	value="box_plan" />
+	<param name="map_inflated_topic"					type="string"	value="/map_inflated" />
+	<param name="box_size"								type="double"	value="0.4572" />
 	<param name="grid_topic"							type="string"	value="/box/grid" />
 	<param name="grid_marker_topic"						type="string"	value="/box/grid_marker" />
 	<param name="grid_markerini_robot_markers_topic"	type="string"	value="/box/ini_robot_markers" />
@@ -21,11 +23,15 @@
 	<!-- Map server -->
 	<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
+	<!-- Map Inflator -->
+	<node pkg="box" name="map_inflator"		type="map_inflator.py" respawn="false" output="screen">
+		<param name="map_topic"				type="string"	value="/map" />
+		<param name="inflation_ratio"		type="double"	value="0.25" />
+	</node>
+
 	<!-- Grid Mapper -->
-	<node pkg="box" name="grid_mapper"	type="grid_mapper.py" respawn="false" output="screen">
-		<param name="box_size"			type="double"	value="0.4572" />
-		<param name="map_topic"			type="string"	value="/map" />
-		<param name="map_frame_id"		type="string"	value="/map" />
+	<node pkg="box" name="grid_mapper"		type="grid_mapper.py" respawn="false" output="screen">
+		<param name="map_frame_id"			type="string"	value="/map" />
 	</node>
 
 	<!-- General Planner -->

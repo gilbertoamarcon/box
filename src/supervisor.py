@@ -45,14 +45,14 @@ def send_subgoal(prev_xy, next_xy):
 rospy.init_node('supervisor')
 
 # Getting parameters
-robot_id				= rospy.get_param('/supervisor/robot_id')
-robot_pos_topic			= rospy.get_param('/supervisor/robot_pos_topic')
-move_base_topic			= rospy.get_param('/supervisor/move_base_topic')
-robot_pos_cov_limit		= rospy.get_param('/supervisor/robot_pos_cov_limit')
-localize_rotate_vel		= rospy.get_param('/supervisor/localize_rotate_vel')
 goal_pos_file_format	= rospy.get_param('/goal_pos_file_format')
 current_pos_file_format	= rospy.get_param('/current_pos_file_format')
 shared_dir				= rospy.get_param('/shared_dir')
+robot_id				= rospy.get_param('~robot_id')
+robot_pos_topic			= rospy.get_param('~robot_pos_topic')
+move_base_topic			= rospy.get_param('~move_base_topic')
+robot_pos_cov_limit		= rospy.get_param('~robot_pos_cov_limit')
+localize_rotate_vel		= rospy.get_param('~localize_rotate_vel')
 
 # File names
 goal_pos_file			= goal_pos_file_format % (shared_dir,robot_id)

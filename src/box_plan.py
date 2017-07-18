@@ -152,10 +152,10 @@ if __name__ == "__main__":
 
 	# Getting parameters
 	box_plan_service	= rospy.get_param('/box_plan_service', 'box_plan')
-	verbose				= rospy.get_param('/box_plan/verbose', False)
-	problem_csv			= rospy.get_param('/box_plan/problem_csv', '$(find box)/temp/problem_csv.csv')
-	planner_script		= rospy.get_param('/box_plan/planner_script', '$(find box)/scripts/planning.sh')
-	solution			= rospy.get_param('/box_plan/solution', '$(find box)/temp/solution')
+	verbose				= rospy.get_param('~verbose', False)
+	problem_csv			= rospy.get_param('~problem_csv', '$(find box)/temp/problem_csv.csv')
+	planner_script		= rospy.get_param('~planner_script', '$(find box)/scripts/planning.sh')
+	solution			= rospy.get_param('~solution', '$(find box)/temp/solution')
 
 	# Initializing planning service
 	service = rospy.Service(box_plan_service, BoxPlan, plan)

@@ -135,7 +135,6 @@ def publish_markers(marker_pub, index_list, label_format="%d", label_offset=0, c
 rospy.init_node('commander')
 
 # Getting parameters
-num_robots				= rospy.get_param('/commander/num_robots')
 box_plan_service		= rospy.get_param('/box_plan_service')
 grid_topic				= rospy.get_param('/grid_topic')
 grid_marker_topic		= rospy.get_param('/grid_marker_topic')
@@ -147,6 +146,7 @@ end_boxes_markers_topic	= rospy.get_param('/grid_markerend_boxes_markers_topic')
 goal_pos_file_format	= rospy.get_param('/goal_pos_file_format')
 current_pos_file_format	= rospy.get_param('/current_pos_file_format')
 shared_dir				= rospy.get_param('/shared_dir')
+num_robots				= rospy.get_param('~num_robots')
 
 grid				= None
 pos_index_markers	= None

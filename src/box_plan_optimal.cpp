@@ -91,11 +91,11 @@ int main(int argc, char **argv){
 	ros::NodeHandle n;
 
 	// Getting parameters
-	n.param<int>("/box_plan_optimal/max_iterations", Search::max_iterations,1e9);
-	n.param<float>("/box_plan_optimal/time_lim_secs", Search::time_lim_secs,1e2);
-	n.param<float>("/box_plan_optimal/epsilon", Search::epsilon,1.0);
-	n.param<bool>("/box_plan_optimal/verbose", verbose,false);
 	n.param<string>("/box_plan_service", box_plan_service,"box_plan");
+	n.param<int>("~max_iterations", Search::max_iterations,1e9);
+	n.param<float>("~time_lim_secs", Search::time_lim_secs,1e2);
+	n.param<float>("~epsilon", Search::epsilon,1.0);
+	n.param<bool>("~verbose", verbose,false);
 
 	// Initializing planning service
 	ros::ServiceServer service = n.advertiseService(box_plan_service, plan);
