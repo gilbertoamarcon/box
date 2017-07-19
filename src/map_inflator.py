@@ -1,31 +1,29 @@
 #!/usr/bin/env python
 import rospy
 import copy
-import numpy as np
 from nav_msgs.msg import OccupancyGrid
 
 def inflate(map):
 
-	# Initializing the map messages
-	map_inflated	= copy.deepcopy(map)
-
 	# Inflating map
 	inflation_steps = int(inflation_ratio*box_size/map.info.resolution)
+	buffer_list = list(map.data)
 	rospy.loginfo("map_inflator: inflation_steps: %d" % inflation_steps)
-	inp = np.array(map.data).reshape((map.info.height, map.info.width))
-	inf = np.array(map.data).reshape((map.info.height, map.info.width))
-	for j in range(len(inp)):
-		for i in range(len(inp[j])):
-			map_val = inp[j][i]
+	for y in range(map.info.height):
+		for x in range(map.info.width):
+			map_val = map.data[x+y*map.info.width]
 			if map_val > 50:
-				index_js = max(j-inflation_steps,0)
-				index_je = min(j+inflation_steps,len(inp)-1)
-				for ij in range(index_js,index_je):
-					index_is = max(i-inflation_steps,0)
-					index_ie = min(i+inflation_steps,len(inp[j])-1)
-					for ii in range(index_is,index_ie):
-						inf[ij][ii] = map_val
-	map_inflated.data = inf.reshape((map.info.width*map.info.height,1))
+				index_xs = max(x-inflation_steps,0)
+				index_xe = min(x+inflation_steps+1,map.info.width)
+				for infx in range(index_xs,index_xe):
+					index_ys = max(y-inflation_steps,0)
+					index_ye = min(y+inflation_steps+1,map.info.height)
+					for infy in range(index_ys,index_ye):
+						buffer_list[infx+infy*map.info.width] = map_val
+
+	# Initializing the map messages
+	map_inflated = copy.deepcopy(map)
+	map_inflated.data = tuple(buffer_list)
 	map_inflated_pub.publish(map_inflated)
 
 

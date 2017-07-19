@@ -16,14 +16,14 @@ from FileComm import *
 # Grid index to grid position
 def index_to_grid(index_list):
 	for index in index_list:
-		j = index % grid.info.width
-		i = (index - j)/grid.info.width
-		yield Point(i,j,0)
+		x = index % grid.info.width
+		y = (index - x)/grid.info.width
+		yield Point(x,y,0)
 
 # Grid position to grid index
 def grid_to_index(points):
 	for p in points:
-		yield int(p.x*grid.info.width + p.y)
+		yield int(p.x+p.y*grid.info.width)
 
 # Grid index to marker
 def index_to_marker(index,label=None,color=None,id=None):

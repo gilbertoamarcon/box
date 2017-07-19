@@ -78,7 +78,7 @@ Example box end positions:
 
 ```roslaunch turtlebot_bringup minimal.launch ```
 
-```roslaunch turtlebot_navigation amcl_demo.launch map_file:=$(rospack find box)/maps/printer_000.yaml ```
+```roslaunch turtlebot_navigation amcl_demo.launch map_file:=$(rospack find box)/maps/printer.yaml ```
 
 ```rosrun box execution_supervisor.sh gil@deskhp:Public 0 ```
 
@@ -87,14 +87,14 @@ Example box end positions:
 
 ```roslaunch turtlebot_bringup minimal.launch ```
 
-```roslaunch turtlebot_navigation amcl_demo.launch map_file:=$(rospack find box)/maps/printer_000.yaml ```
+```roslaunch turtlebot_navigation amcl_demo.launch map_file:=$(rospack find box)/maps/printer.yaml ```
 
 ```rosrun box execution_supervisor.sh gil@deskhp:Public 1 ```
 
 
 ###### On the "Planner" machine:
 
-```rosrun box execution_commander.sh 2 "$(rospack find box)/maps/printer_000.yaml" ```
+```rosrun box execution_commander.sh 2 "$(rospack find box)/maps/printer.yaml" ```
 
 
 
@@ -104,19 +104,19 @@ Example box end positions:
 
 ###### On the "Robot 0" machine:
 
-```roslaunch pioneer localization.launch map_name:=$(rospack find pioneer)/maps/printer_square.yaml```
+```roslaunch pioneer localization.launch map_name:=$(rospack find pioneer)/maps/printer.yaml```
 
 ```rosrun box execution_supervisor.sh gil@laptop:Public 0 ```
 
 
 ###### On the "Robot 1" machine:
 
-```roslaunch pioneer localization.launch map_name:=$(rospack find pioneer)/maps/printer_square.yaml```
+```roslaunch pioneer localization.launch map_name:=$(rospack find pioneer)/maps/printer.yaml```
 
 ```rosrun box execution_supervisor.sh gil@laptop:Public 1 ```
 
 
 ###### On the "Planner" machine:
 
-```rosrun box execution_commander.sh 2 "$(rospack find pioneer)/maps/printer_square.yaml" ```
+```rosrun box execution_commander.sh 2 "$(rospack find pioneer)/maps/printer.yaml" ```
 

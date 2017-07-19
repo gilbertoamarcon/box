@@ -3,42 +3,40 @@ import rospy
 import sys
 import math
 import copy
-import numpy as np
 from nav_msgs.msg import OccupancyGrid
 from visualization_msgs.msg import Marker, MarkerArray
 
 def downsample(map):
 
 	# Scaling factors
-	scale = box_size/map.info.resolution
-	grid = copy.deepcopy(map)
-	grid.info.resolution = box_size
-	grid.info.width = int(math.ceil(map.info.width/scale))
-	grid.info.height = int(math.ceil(map.info.height/scale))
+	scale					= box_size/map.info.resolution
+	grid					= copy.deepcopy(map)
+	grid.info.resolution	= box_size
+	grid.info.width			= int(math.ceil(map.info.width/scale))
+	grid.info.height		= int(math.ceil(map.info.height/scale))
 	rospy.loginfo("grid_mapper: Map size: (%d,%d)" % (map.info.width,map.info.height))
 	rospy.loginfo("grid_mapper: Grid size: (%d,%d)" % (grid.info.width,grid.info.height))
 	rospy.loginfo("grid_mapper: Ratio: %.3f" % scale)
 
 	# Allocating buffers
-	inp = np.array(map.data).reshape((map.info.height, map.info.width))
-	out = np.zeros((grid.info.height, grid.info.width))
+	out = [0]*grid.info.width*grid.info.height
 
 	# Downsampling
-	for j in range(len(inp)):
-		for i in range(len(inp[j])):
-			oi = int(math.floor(i/scale))
-			oj = int(math.floor(j/scale))
-			map_val = inp[j][i]
+	for y in range(map.info.height):
+		for x in range(map.info.width):
+			oy = int(math.floor(y/scale))
+			ox = int(math.floor(x/scale))
+			map_val = map.data[x+y*map.info.width]
 			if map_val > 50 or map_val == -1:
-				out[oj][oi] = 100
+				out[ox+oy*grid.info.width] = map_val
 
 	# Formatting message data
-	grid.data = out.reshape((grid.info.width*grid.info.height,1))
+	grid.data = tuple(out)
 
 	# Preparing marker array
 	marker_array = MarkerArray()
-	for j in range(len(out)):
-		for i in range(len(out[j])):
+	for y in range(grid.info.height):
+		for x in range(grid.info.width):
 			marker = Marker()
 			marker.header.frame_id = map_frame_id
 			marker.type = marker.TEXT_VIEW_FACING
@@ -51,8 +49,8 @@ def downsample(map):
 			marker.color.g = 0.50
 			marker.color.b = 0.50
 			marker.pose = copy.deepcopy(grid.info.origin)
-			marker.pose.position.x += i*box_size + box_size/2
-			marker.pose.position.y += j*box_size + box_size/2
+			marker.pose.position.y += y*box_size + box_size/2
+			marker.pose.position.x += x*box_size + box_size/2
 			marker_array.markers.append(marker)
 
 	# Marker IDs

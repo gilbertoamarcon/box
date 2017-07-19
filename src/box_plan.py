@@ -18,39 +18,42 @@ def gen_problem_csv(req):
 	h = req.grid.height
 
 	# Map data
-	data = [list(req.grid.data[i:i+w]) for i in range(0, len(req.grid.data), w)]
-
-	# Obstacle parsing
-	for i in range(0,w):
-		for j in range(0,h):
-			if data[i][j] == 0:
-				data[i][j] = ""
-			elif data[i][j] == 1:
-				data[i][j] = "#"
+	data = [" "]*w*h
+	for y in range(h):
+		for x in range(w):
+			if req.grid.data[x+y*w] == 0:
+				data[x+y*w] = " "
+			if req.grid.data[x+y*w] == 1:
+				data[x+y*w] = "#"
 
 	# Initial Robot Positions
 	for i,r in enumerate(req.problem.initial_robot):
 		x = int(r.x)
 		y = int(r.y)
-		data[x][y] = str(i)
+		data[x+y*w] = str(i)
 
 	# Initial Box Positions
 	for i,r in enumerate(req.problem.initial_box):
 		x = int(r.x)
 		y = int(r.y)
-		data[x][y] = chr(65+i)
+		data[x+y*w] = chr(65+i)
 
 	# Final Box Positions
 	for i,r in enumerate(req.problem.final_box):
 		x = int(r.x)
 		y = int(r.y)
-		data[x][y] = chr(97+i)
+		data[x+y*w] = chr(97+i)
+
+	# Parsing to filebuffer
+	file_buffer = ""
+	for y in range(h):
+		for x in range(w):
+			file_buffer += data[x+y*w]+","
+		file_buffer += "\n"
 
 	# Writing to file
-	with open(problem_csv,'wb') as fileout:
-		for r in data:
-			row = ",".join(r)+"\n"
-			fileout.write(row)
+	with open(problem_csv,'wb') as f:
+		f.write(file_buffer)
 	
 def read_plan(req):
 
@@ -92,8 +95,8 @@ def read_plan(req):
 				for i in range(2,6):
 					action[i] = int(action[i])
 				ptr = Point()
-				ptr.x = action[4];
-				ptr.y = action[5];
+				ptr.y = action[4];
+				ptr.x = action[5];
 				ptr.z = 0.00;
 				robots[action[1]] = ptr
 				new_step = True
@@ -105,12 +108,12 @@ def read_plan(req):
 				for i in range(3,9):
 					action[i] = int(action[i])
 				ptr = Point()
-				ptr.x = action[5];
-				ptr.y = action[6];
+				ptr.y = action[5];
+				ptr.x = action[6];
 				ptr.z = 0.00;
 				ptb = Point()
-				ptb.x = action[7];
-				ptb.y = action[8];
+				ptb.y = action[7];
+				ptb.x = action[8];
 				ptb.z = 0.00;
 				robots[action[1]] = ptr
 				boxes[action[2]] = ptb

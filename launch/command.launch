@@ -26,7 +26,7 @@
 	<!-- Map Inflator -->
 	<node pkg="box" name="map_inflator"		type="map_inflator.py" respawn="false" output="screen">
 		<param name="map_topic"				type="string"	value="/map" />
-		<param name="inflation_ratio"		type="double"	value="0.25" />
+		<param name="inflation_ratio"		type="double"	value="0.5" />
 	</node>
 
 	<!-- Grid Mapper -->
