@@ -95,8 +95,8 @@ def read_plan(req):
 				for i in range(2,6):
 					action[i] = int(action[i])
 				ptr = Point()
-				ptr.y = action[4];
-				ptr.x = action[5];
+				ptr.x = action[4];
+				ptr.y = action[5];
 				ptr.z = 0.00;
 				robots[action[1]] = ptr
 				new_step = True
@@ -108,12 +108,12 @@ def read_plan(req):
 				for i in range(3,9):
 					action[i] = int(action[i])
 				ptr = Point()
-				ptr.y = action[5];
-				ptr.x = action[6];
+				ptr.x = action[5];
+				ptr.y = action[6];
 				ptr.z = 0.00;
 				ptb = Point()
-				ptb.y = action[7];
-				ptb.x = action[8];
+				ptb.x = action[7];
+				ptb.y = action[8];
 				ptb.z = 0.00;
 				robots[action[1]] = ptr
 				boxes[action[2]] = ptb

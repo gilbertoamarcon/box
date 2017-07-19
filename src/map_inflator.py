@@ -6,13 +6,14 @@ from nav_msgs.msg import OccupancyGrid
 def inflate(map):
 
 	# Inflating map
+	free_thresh = 50
 	inflation_steps = int(inflation_ratio*box_size/map.info.resolution)
 	buffer_list = list(map.data)
 	rospy.loginfo("map_inflator: inflation_steps: %d" % inflation_steps)
 	for y in range(map.info.height):
 		for x in range(map.info.width):
 			map_val = map.data[x+y*map.info.width]
-			if map_val > 50:
+			if map_val > free_thresh:
 				index_xs = max(x-inflation_steps,0)
 				index_xe = min(x+inflation_steps+1,map.info.width)
 				for infx in range(index_xs,index_xe):
@@ -32,7 +33,7 @@ rospy.init_node('map_inflator')
 
 # Getting parameters
 map_inflated_topic	= rospy.get_param('/map_inflated_topic','/map_inflated')
-box_size			= rospy.get_param('/box_size', 0.45)
+box_size			= rospy.get_param('/box_size', 0.4572)
 map_topic			= rospy.get_param('~map_topic','/map')
 inflation_ratio		= rospy.get_param('~inflation_ratio',0.0)
 

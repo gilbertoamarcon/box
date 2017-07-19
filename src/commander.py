@@ -198,6 +198,8 @@ while not rospy.is_shutdown():
 			s = raw_input()
 			ini_boxes = map(int, s.split())
 			break
+		except KeyboardInterrupt:
+			exit(0)
 		except:
 			print "Bad input, please provide space-separated integers."
 		if rospy.is_shutdown():
@@ -211,6 +213,8 @@ while not rospy.is_shutdown():
 			s = raw_input()
 			end_boxes = map(int, s.split())
 			break
+		except KeyboardInterrupt:
+			exit(0)
 		except:
 			print "Bad input, please provide space-separated integers."
 		if rospy.is_shutdown():
