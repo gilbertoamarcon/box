@@ -4,6 +4,7 @@ project(box)
 add_definitions(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
+	genmsg
 	roscpp
 	rospy
 	std_msgs
@@ -47,7 +48,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 	LIBRARIES box_planner_optimal
-	CATKIN_DEPENDS roscpp rospy message_runtime
+	CATKIN_DEPENDS roscpp rospy message_runtime std_msgs geometry_msgs
 #  DEPENDS system_lib
 )
 
@@ -73,6 +74,7 @@ include_directories(
 link_directories(lib)
 
 add_executable(box_plan_optimal src/box_plan_optimal.cpp)
+add_dependencies(box_plan_optimal box_generate_messages_cpp)
 target_link_libraries(box_plan_optimal ${catkin_LIBRARIES} box_planner_optimal)
 
 install(TARGETS box_planner_optimal

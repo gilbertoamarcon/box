@@ -78,8 +78,8 @@ def get_pos_index_markers(msg):
 # ============================================
 
 def request_plan(grid_map,problem):
-	rospy.wait_for_service(box_plan_service)
 	try:
+		rospy.wait_for_service(box_plan_service)
 		box_plan	= rospy.ServiceProxy(box_plan_service, BoxPlan)
 		resp1 = box_plan(grid_map,problem)
 		return resp1.plan

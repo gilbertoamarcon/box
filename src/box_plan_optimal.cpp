@@ -19,11 +19,11 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 	State::start	= new State();
 	State::goal		= new State();
 	for(auto& pos : req.problem.initial_box)
-		State::start->boxes.push_back(Pos(int(pos.x),int(pos.y)));
+		State::start->boxes.push_back(Pos(int(pos.y),int(pos.x)));
 	for(auto& pos : req.problem.initial_robot)
-		State::start->robots.push_back(Pos(int(pos.x),int(pos.y)));
+		State::start->robots.push_back(Pos(int(pos.y),int(pos.x)));
 	for(auto& pos : req.problem.final_box)
-		State::goal->boxes.push_back(Pos(int(pos.x),int(pos.y)));
+		State::goal->boxes.push_back(Pos(int(pos.y),int(pos.x)));
 
 	ROS_INFO("box_plan_optimal: Problem received.");
 	if(verbose)
@@ -54,8 +54,8 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 			// For all robot positions
 			for(auto& pos : Search::plan.top().robots){
 				geometry_msgs::Point pt;
-				pt.x = pos.i;
-				pt.y = pos.j;
+				pt.x = pos.j;
+				pt.y = pos.i;
 				pt.z = 0.00;
 				step.robot_pos.push_back(pt);
 			}
@@ -63,8 +63,8 @@ bool plan(box::BoxPlan::Request  &req, box::BoxPlan::Response &res){
 			// For all box positions
 			for(auto& pos : Search::plan.top().boxes){
 				geometry_msgs::Point pt;
-				pt.x = pos.i;
-				pt.y = pos.j;
+				pt.x = pos.j;
+				pt.y = pos.i;
 				pt.z = 0.00;
 				step.box_pos.push_back(pt);
 			}
@@ -88,17 +88,19 @@ int main(int argc, char **argv){
 
 	// Initializing node
 	ros::init(argc, argv, "box_plan_optimal");
-	ros::NodeHandle n;
 
 	// Getting parameters
-	n.param<string>("/box_plan_service", box_plan_service,"box_plan");
-	n.param<int>("~max_iterations", Search::max_iterations,1e9);
-	n.param<float>("~time_lim_secs", Search::time_lim_secs,1e2);
-	n.param<float>("~epsilon", Search::epsilon,1.0);
-	n.param<bool>("~verbose", verbose,false);
+	ros::NodeHandle ns;
+	ns.param<string>("/box_plan_service", box_plan_service,"box_plan");
+
+	ros::NodeHandle np("~");
+	np.param<int>("max_iterations", Search::max_iterations,1e9);
+	np.param<float>("time_lim_secs", Search::time_lim_secs,1e2);
+	np.param<float>("epsilon", Search::epsilon,1.0);
+	np.param<bool>("verbose", verbose,false);
 
 	// Initializing planning service
-	ros::ServiceServer service = n.advertiseService(box_plan_service, plan);
+	ros::ServiceServer service = ns.advertiseService(box_plan_service, plan);
 
 	// Ready message
 	ROS_INFO("box_plan_optimal: Ready to box-plan.");

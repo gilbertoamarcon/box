@@ -25,8 +25,10 @@ def get_robot_pos(msg):
 # ============================================
 
 def send_subgoal(prev_xy, next_xy):
+	global map_frame_id
+	global action_exec_timeout
 	goal = MoveBaseGoal()
-	goal.target_pose.header.frame_id = "map"
+	goal.target_pose.header.frame_id = map_frame_id
 	goal.target_pose.pose.position.x = next_xy.x
 	goal.target_pose.pose.position.y = next_xy.y
 	goal.target_pose.pose.position.z = 0
@@ -36,7 +38,7 @@ def send_subgoal(prev_xy, next_xy):
 	goal.target_pose.pose.orientation.z = quaternion[2]
 	goal.target_pose.pose.orientation.w = quaternion[3]
 	client.send_goal(goal)
-	client.wait_for_result(rospy.Duration.from_sec(15))
+	client.wait_for_result(rospy.Duration.from_sec(action_exec_timeout))
 
 # ============================================
 # Main
@@ -51,8 +53,10 @@ shared_dir				= rospy.get_param('/shared_dir')
 robot_id				= rospy.get_param('~robot_id')
 robot_pos_topic			= rospy.get_param('~robot_pos_topic')
 move_base_topic			= rospy.get_param('~move_base_topic')
+map_frame_id			= rospy.get_param('~map_frame_id')
 robot_pos_cov_limit		= rospy.get_param('~robot_pos_cov_limit')
 localize_rotate_vel		= rospy.get_param('~localize_rotate_vel')
+action_exec_timeout		= rospy.get_param('~action_exec_timeout')
 
 # File names
 goal_pos_file			= goal_pos_file_format % (shared_dir,robot_id)
