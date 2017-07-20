@@ -47,9 +47,10 @@ def gen_problem_csv(req):
 	# Parsing to filebuffer
 	file_buffer = ""
 	for y in range(h):
+		buffer_list = []
 		for x in range(w):
-			file_buffer += data[x+y*w]+","
-		file_buffer += "\n"
+			buffer_list.append(data[x+y*w])			
+		file_buffer += ','.join(buffer_list)+"\n"
 
 	# Writing to file
 	with open(problem_csv,'wb') as f:
