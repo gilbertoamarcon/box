@@ -2,6 +2,7 @@
 import math
 import rospy
 import actionlib
+from time import sleep
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Point
 from geometry_msgs.msg import PoseWithCovarianceStamped
@@ -39,6 +40,16 @@ def send_subgoal(prev_xy, next_xy):
 	goal.target_pose.pose.orientation.w = quaternion[3]
 	client.send_goal(goal)
 	client.wait_for_result(rospy.Duration.from_sec(action_exec_timeout))
+
+	twist = Twist()
+	for i in range(6):
+		twist.linear.x = +0.1
+		cmd_vel_pub.publish(twist)
+		sleep(0.250)
+	for i in range(6):
+		twist.linear.x = -0.1
+		cmd_vel_pub.publish(twist)
+		sleep(0.250)
 
 # ============================================
 # Main
